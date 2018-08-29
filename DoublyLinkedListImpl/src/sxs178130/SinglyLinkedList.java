@@ -1,8 +1,7 @@
-package sxs178130;
-
 /** @author rbk
  *  Singly linked list: for instructional purposes only
  *  Ver 1.0: 2018/08/21
+ *  Ver 2.0: 2018/08/28: modified to be able to extend to DoublyLinkedList
  *  Entry class has generic type associated with it, to allow inheritance.
  *  We can now have a doubly linked list class DLL that has
 
@@ -16,6 +15,8 @@ this.prev = prev;
 }
 
  */
+
+package sxs178130;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.NoSuchElementException;
@@ -55,12 +56,6 @@ public class SinglyLinkedList<T> implements Iterable<T> {
             ready = false;
         }
 
-        SLLIterator(Entry<T> head) {
-            cursor = head;
-            prev = null;
-            ready = false;
-        }
-
         public boolean hasNext() {
             return cursor.next != null;
         }
@@ -91,13 +86,17 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 
     // Add new elements to the end of the list
     public void add(T x) {
-        tail.next = new Entry<>(x, null);
+        add(new Entry<>(x, null));
+    }
+
+    public void add(Entry<T> ent) {
+        tail.next = ent;
         tail = tail.next;
         size++;
     }
 
     public void printList() {
-        System.out.print(size + ": ");
+        System.out.print(this.size + ": ");
         for(T item: this) {
             System.out.print(item + " ");
         }
@@ -180,23 +179,4 @@ public class SinglyLinkedList<T> implements Iterable<T> {
         lst.printList();
     }
 }
-
-/* Sample input:
-   1 2 1 2 1 1 1 2 1 1 2 0
-   Sample output:
-10: 1 2 3 4 5 6 7 8 9 10
-1
-9: 2 3 4 5 6 7 8 9 10
-2
-8: 3 4 5 6 7 8 9 10
-3
-4
-5
-7: 3 4 6 7 8 9 10
-6
-7
-6: 3 4 6 8 9 10
-6: 3 4 6 8 9 10
-6: 3 6 9 4 8 10
-*/
 

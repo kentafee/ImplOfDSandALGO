@@ -14,8 +14,6 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
         }
     }
 
-    Entry<T> head, tail;
-
 
     DoublyLinkedList() {
         head = new Entry<>(null, null, null);
@@ -34,7 +32,6 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
     public class DLLIterator extends SLLIterator {
 
         DLLIterator() {
-            super(head);
         }
 
         public boolean hasPrev() {
@@ -69,10 +66,8 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
 
     @Override
     public void add(T x) {
-        Entry<T> temp = new Entry(x, null, tail);
-        tail.next = temp;
-        tail = temp;
-        size++;
+        Entry<T> temp = new Entry(x, null, (Entry<T>)tail);
+        add(temp);
     }
 
 
@@ -91,18 +86,6 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
 
         Iterator<Integer> itr = dLLst.dllIterator();
 
-
-//        while (itr.hasNext()) {
-//            Integer item = itr.next();
-//
-//            System.out.println(item.toString());
-//        }
-
-//        while (((DoublyLinkedList.DLLIterator) itr).hasPrev()) {
-//            Integer item = (Integer) ((DoublyLinkedList.DLLIterator) itr).prev();
-//            System.out.println(item.toString());
-//        }
-
         dLLst.printList();
 
         Scanner in = new Scanner(System.in);
@@ -119,7 +102,7 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
                     break;
                 case 2:  // Remove element
                     itr.remove();
-                    ((SinglyLinkedList)dLLst).printList();
+                    dLLst.printList();
                     break;
 
                 case 3:  // Move to next element and print it
@@ -133,7 +116,7 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
                     break whileloop;
             }
         }
-        ((SinglyLinkedList)dLLst).printList();
+        dLLst.printList();
 
 
     }
