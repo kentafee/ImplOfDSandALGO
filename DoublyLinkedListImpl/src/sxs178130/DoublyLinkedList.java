@@ -61,7 +61,11 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
             return (T) cursor.element;
         }
 
-
+        @Override
+        public void remove() {
+            super.remove();
+            ((Entry<T>)(cursor.next)).prev = (Entry<T>)cursor;
+        }
     }
 
     @Override
@@ -69,6 +73,7 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
         Entry<T> temp = new Entry(x, null, (Entry<T>)tail);
         add(temp);
     }
+
 
 
 
