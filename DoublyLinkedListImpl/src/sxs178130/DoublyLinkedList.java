@@ -30,7 +30,7 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
         return new DLLIterator();
     }
 
-    public class DLLIterator extends SLLIterator {
+    protected class DLLIterator extends SLLIterator implements DoublyLinkedListIterator<T>{
 
         DLLIterator() {
         }
@@ -44,7 +44,7 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
 
         }
 
-        public T prev() {
+        public T previous() {
 
             cursor = ((Entry<T>) cursor).prev;
             prev = ((Entry<T>) prev).prev;
@@ -101,7 +101,7 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
 
                 case 3:  // Move to next element and print it
                     if (((DoublyLinkedList.DLLIterator) itr).hasPrev()) {
-                        System.out.println(((DoublyLinkedList.DLLIterator) itr).prev());
+                        System.out.println(((DoublyLinkedList.DLLIterator) itr).previous());
                     } else {
                         break whileloop;
                     }
