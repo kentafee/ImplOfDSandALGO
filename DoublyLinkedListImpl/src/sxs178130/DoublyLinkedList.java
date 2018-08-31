@@ -29,6 +29,7 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
     public Iterator<T> dllIterator() {
         return new DLLIterator();
     }
+
     public class DLLIterator extends SLLIterator {
 
         DLLIterator() {
@@ -45,36 +46,24 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
 
         public T prev() {
 
-            if(prev == cursor)
-            {
-                ((Entry<T>) (cursor.next)).prev = (Entry<T>)cursor;
-                prev = ((Entry<T>) cursor).prev;
-            }
-            else
-            {
-                cursor = prev;
-                prev = ((Entry<T>) prev).prev;
-            }
-
-
+            cursor = ((Entry<T>) cursor).prev;
+            prev = ((Entry<T>) prev).prev;
             ready = true;
-            return (T) cursor.element;
+            return cursor.element;
         }
 
         @Override
         public void remove() {
             super.remove();
-            ((Entry<T>)(cursor.next)).prev = (Entry<T>)cursor;
+            ((Entry<T>) (cursor.next)).prev = (Entry<T>) cursor;
         }
     }
 
     @Override
     public void add(T x) {
-        Entry<T> temp = new Entry(x, null, (Entry<T>)tail);
-        add(temp);
+        add(new Entry(x, null, (Entry<T>) tail));
+
     }
-
-
 
 
     public static void main(String[] args) throws NoSuchElementException {
@@ -85,7 +74,7 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
 
         DoublyLinkedList<Integer> dLLst = new DoublyLinkedList<>();
         for (int i = 1; i <= n; i++) {
-            dLLst.add(Integer.valueOf(i+22));
+            dLLst.add(Integer.valueOf(i + 22));
         }
 
 
@@ -95,9 +84,9 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
 
         Scanner in = new Scanner(System.in);
         whileloop:
-        while(in.hasNext()) {
+        while (in.hasNext()) {
             int com = in.nextInt();
-            switch(com) {
+            switch (com) {
                 case 1:  // Move to next element and print it
                     if (itr.hasNext()) {
                         System.out.println(itr.next());
@@ -111,8 +100,8 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
                     break;
 
                 case 3:  // Move to next element and print it
-                    if (((DoublyLinkedList.DLLIterator)itr).hasPrev()) {
-                        System.out.println(((DoublyLinkedList.DLLIterator)itr).prev());
+                    if (((DoublyLinkedList.DLLIterator) itr).hasPrev()) {
+                        System.out.println(((DoublyLinkedList.DLLIterator) itr).prev());
                     } else {
                         break whileloop;
                     }
@@ -121,6 +110,8 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
                     break whileloop;
             }
         }
+        dLLst.printList();
+        dLLst.unzip();
         dLLst.printList();
 
 

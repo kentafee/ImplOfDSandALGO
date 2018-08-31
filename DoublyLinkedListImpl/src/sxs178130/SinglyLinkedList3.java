@@ -20,7 +20,6 @@ public class SinglyLinkedList3<T> extends SinglyLinkedList2 {
     private IteratorAndData getItrAtIndex(int index) {
         int ptr = -1;
         Iterator<T> itr = this.iterator();
-
         while (itr.hasNext()) {
             ptr++;
             T data = itr.next();
@@ -87,25 +86,26 @@ public class SinglyLinkedList3<T> extends SinglyLinkedList2 {
 
     }
 
+    class IteratorAndData<T> {
+
+        private Iterator itr;
+        private T data;
+
+        IteratorAndData(Iterator<T> itr, T data) {
+            this.data = data;
+            this.itr = itr;
+        }
+
+        public Iterator getItr() {
+            return itr;
+        }
+
+        public T getData() {
+            return data;
+        }
+
+
+    }
+
 }
 
-class IteratorAndData<T> {
-
-    private Iterator itr;
-    private T data;
-
-    IteratorAndData(Iterator<T> itr, T data) {
-        this.data = data;
-        this.itr = itr;
-    }
-
-    public Iterator getItr() {
-        return itr;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-
-}
