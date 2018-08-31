@@ -18,18 +18,22 @@ public class SinglyLinkedList3<T> extends SinglyLinkedList2 {
 
 
     private IteratorAndData getItrAtIndex(int index) {
+
+        if(index < 0 || index >size-1)
+            throw new NoSuchElementException();
         int ptr = -1;
+        T data = null;
         Iterator<T> itr = this.iterator();
         while (itr.hasNext()) {
             ptr++;
-            T data = itr.next();
-            if (ptr == index) {
-                return new IteratorAndData(itr, data);
-
-            }
+            data = itr.next();
+            if (ptr == index)
+                break;
         }
 
-        throw new NoSuchElementException();
+        return new IteratorAndData(itr, data);
+
+
 
     }
 
@@ -38,17 +42,17 @@ public class SinglyLinkedList3<T> extends SinglyLinkedList2 {
         return (T)getItrAtIndex(index).getData();
 
     }
-    public boolean set(int index, T data) {
-
-        IteratorAndData itrData = getItrAtIndex(index);
-
-    }
-
-    public boolean add(int index, T data) {
-
-        IteratorAndData itrData = getItrAtIndex(index);
-
-    }
+//    public boolean set(int index, T data) {
+//
+//        IteratorAndData itrData = getItrAtIndex(index);
+//
+//    }
+//
+//    public boolean add(int index, T data) {
+//
+//        IteratorAndData itrData = getItrAtIndex(index);
+//
+//    }
 
     public T remove(int index) {
 
