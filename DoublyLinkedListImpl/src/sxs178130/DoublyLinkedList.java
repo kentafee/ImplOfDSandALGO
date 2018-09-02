@@ -55,6 +55,7 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
         @Override
         public void remove() {
             super.remove();
+            if(cursor != tail)
             ((Entry<T>) (cursor.next)).prev = (Entry<T>) cursor;
         }
     }
@@ -74,7 +75,7 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
 
         DoublyLinkedList<Integer> dLLst = new DoublyLinkedList<>();
         for (int i = 1; i <= n; i++) {
-            dLLst.add(Integer.valueOf(i + 22));
+            dLLst.add(Integer.valueOf(i + 33));
         }
 
 

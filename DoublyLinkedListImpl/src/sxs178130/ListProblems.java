@@ -11,12 +11,12 @@ public class ListProblems<T> extends SinglyLinkedList3{
     return (T)get(size -k);
     }
 
-    public void reverse()
-    {
-        ListProblems revList;
-        Iterator
-
-    }
+//    public void reverse()
+//    {
+//        ListProblems revList;
+//        Iterator
+//
+//    }
 
     public static void main(String[] args) throws NoSuchElementException {
         int n = 10;
