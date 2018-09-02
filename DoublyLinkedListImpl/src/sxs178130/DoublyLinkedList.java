@@ -21,10 +21,7 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
         size = 0;
     }
 
-    @Override
-    public Iterator<T> iterator() {
-        return new DLLIterator();
-    }
+
 
     public Iterator<T> dllIterator() {
         return new DLLIterator();
