@@ -9,4 +9,6 @@ public interface DoublyLinkedListIterator<T> {
 
     T previous();
 
+    void add(T x);
+
 }

@@ -60,6 +60,15 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
             }
 
         }
+
+        public void add(T x)
+        {
+            Entry<T> newNode = new Entry<T>(x, (Entry<T>)(cursor.next),(Entry<T>)cursor);
+            cursor.next = newNode;
+            ready = false;
+            if(newNode.next!=null)
+                ((Entry<T>)newNode.next).prev = newNode;
+        }
     }
 
     @Override
@@ -108,6 +117,12 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
                     } else {
                         break whileloop;
                     }
+                    break;
+                case 4:  // Add element
+                    System.out.println("Enter element to be added.");
+                    int x = in.nextInt();
+                    ((DoublyLinkedList.DLLIterator) itr).add(Integer.valueOf(x));
+                    dLLst.printList();
                     break;
                 default:  // Exit loop
                     break whileloop;
