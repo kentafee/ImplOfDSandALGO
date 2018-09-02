@@ -64,7 +64,7 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
 
     @Override
     public void add(T x) {
-        add(new Entry(x, null, (Entry<T>) tail));
+        add(new Entry<T>(x, null, (Entry<T>) tail));
 
     }
 
