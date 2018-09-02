@@ -68,6 +68,8 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
             ready = false;
             if(newNode.next!=null)
                 ((Entry<T>)newNode.next).prev = newNode;
+            else
+                tail = newNode;
         }
     }
 
