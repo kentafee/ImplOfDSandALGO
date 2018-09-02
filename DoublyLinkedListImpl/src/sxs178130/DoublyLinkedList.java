@@ -62,11 +62,12 @@ public class DoublyLinkedList<T> extends SinglyLinkedList<T> {
         {
             Entry<T> newNode = new Entry<T>(x, (Entry<T>)(cursor.next),(Entry<T>)cursor);
             cursor.next = newNode;
-            ready = false;
             if(newNode.next!=null)
                 ((Entry<T>)newNode.next).prev = newNode;
             else
                 tail = newNode;
+            next();
+            ready = false;
         }
     }
 
