@@ -8,6 +8,8 @@ public class BoundedQueue<T> implements Queue<T>{
     private Object[] arr;
     BoundedQueue (int size)
     {
+        this.start = 0;
+        this.end = 0;
         this.noOfElements =0;
         this.arr = new Object[size];
     }
