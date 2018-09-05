@@ -5,7 +5,7 @@ public interface Queue<T> {
     T poll();
     T peek();
     boolean isEmpty();
-    boolean clear();
+    void clear();
     void toArray(T[] a);
     int size();
 
