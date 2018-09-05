@@ -1,6 +1,8 @@
 package sxs178130;
 
-public interface DoublyLinkedListIterator<T> {
+import java.util.Iterator;
+
+public interface DoublyLinkedListIterator<T> extends Iterator<T> {
     boolean hasNext();
 
     boolean hasPrev();

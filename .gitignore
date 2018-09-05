@@ -1,3 +1,6 @@
 DoublyLinkedListImpl/*.iml
 DoublyLinkedListImpl/.idea
 DoublyLinkedListImpl/out
+BoundedQueue/*.iml
+BoundedQueue/.idea
+BoundedQueue/out

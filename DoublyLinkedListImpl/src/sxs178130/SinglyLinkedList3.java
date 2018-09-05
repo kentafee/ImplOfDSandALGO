@@ -17,6 +17,29 @@ public class SinglyLinkedList3<T> extends SinglyLinkedList2 {
 
 
 
+    protected class SLLIterator extends SinglyLinkedList.SLLIterator
+    {
+        SLLIterator()
+        {
+
+        }
+
+        public void add(T x)
+        {
+            Entry<T> newNode = new Entry<T>(x, (Entry<T>)(cursor.next));
+            cursor.next = newNode;
+            if(newNode.next==null)
+                tail = newNode;
+            next();
+        }
+    }
+
+    @Override
+    public Iterator iterator()
+    {
+        return new SLLIterator();
+    }
+
     private IteratorAndData getItrAtIndex(int index) {
 
         if(index < 0 || index >size-1)
@@ -42,17 +65,20 @@ public class SinglyLinkedList3<T> extends SinglyLinkedList2 {
         return (T)getItrAtIndex(index).getData();
 
     }
-//    public boolean set(int index, T data) {
-//
-//        IteratorAndData itrData = getItrAtIndex(index);
-//
-//    }
-//
-//    public boolean add(int index, T data) {
-//
-//        IteratorAndData itrData = getItrAtIndex(index);
-//
-//    }
+    public void set(int index, T data) {
+
+        IteratorAndData itrData = getItrAtIndex(index);
+        itrData.getItr().remove();
+        ((SLLIterator)itrData.getItr()).add(data);
+
+    }
+
+    public void add(int index, T data) {
+
+        IteratorAndData itrData = getItrAtIndex(index);
+
+
+    }
 
     public T remove(int index) {
 
