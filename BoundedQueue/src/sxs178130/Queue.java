@@ -8,5 +8,6 @@ public interface Queue<T> {
     void clear();
     void toArray(T[] a);
     int size();
+    void printQueue();
 
 }

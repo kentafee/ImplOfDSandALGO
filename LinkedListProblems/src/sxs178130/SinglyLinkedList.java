@@ -104,6 +104,9 @@ public class SinglyLinkedList<T> implements Iterable<T> {
         System.out.println();
     }
 
+
+
+
     // Rearrange the elements of the list by linking the elements at even index
     // followed by the elements at odd index. Implemented by rearranging pointers
     // of existing elements without allocating any new elements.

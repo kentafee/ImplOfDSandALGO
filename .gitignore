@@ -7,3 +7,6 @@ BoundedQueue/out
 LinkedListProblems/*.iml
 LinkedListProblems/.idea
 LinkedListProblems/out
+WebServerApplication/*.iml
+WebServerApplication/.idea
+WebServerApplication/out
