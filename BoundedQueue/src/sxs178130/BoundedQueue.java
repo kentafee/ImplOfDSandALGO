@@ -7,13 +7,13 @@ public class BoundedQueue<T> implements Queue<T>{
     private int start;
     private int end;
     private int noOfElements;
-    private Object[] arr;
+    private T[] arr;
     BoundedQueue (int size)
     {
         this.start = 0;
         this.end = -1;
         this.noOfElements =0;
-        this.arr = new Object[size];
+        this.arr = (T[])(new Object[size]);
     }
 
     @Override
@@ -144,7 +144,7 @@ public class BoundedQueue<T> implements Queue<T>{
         }
 
         int i =1;
-        Queue<Integer> que= new BoundedQueue<>(5);
+        BoundedQueue<Integer> que= new BoundedQueue<>(5);
         for ( i = 1; i <= n; i++) {
             que.offer(Integer.valueOf(i));
         }
