@@ -4,26 +4,98 @@
 
 package sxs178130;
 
-public class Num  implements Comparable<Num> {
+public class Num implements Comparable<Num> {
 
     static long defaultBase = 10;  // Change as needed
-    long base = defaultBase;  // Change as needed
+    static long base = defaultBase;  // Change as needed
     long[] arr;  // array to store arbitrarily large integers
     boolean isNegative;  // boolean flag to represent negative numbers
     int len;  // actual number of elements of array that are used;  number is stored in arr[0..len-1]
 
     public Num(String s) {
+
+        isNegative = (s.charAt(0) == '-') ? true : false;
+        double Log_10B = Math.log10(this.base);
+        int stringLength = (isNegative) ? s.length() - 1 : s.length();
+        len = (int) Math.ceil((stringLength + 1 / Log_10B) + 1);
+        arr = new long[len];
+        for (int i = 0; i < stringLength; i++) {
+            arr[i] = Character.getNumericValue(s.charAt(s.length() - 1 - i));
+        }
+
+
     }
 
     public Num(long x) {
     }
 
+    public Num() {
+
+    }
+
     public static Num add(Num a, Num b) {
+
         return null;
     }
 
+
     public static Num subtract(Num a, Num b) {
+
+        if (b.isNegative && !a.isNegative)
+            return add(a, b);
+        else if (a.isNegative && b.isNegative)
+            return subtract(b, a);
+        else if (a.isNegative && !b.isNegative)
+            return add(a, b);
+
+
+        if (a.len > b.len) {
+
+        } else {
+
+        }
+
+
         return null;
+    }
+
+    private static Num minus(Num a, Num b) {
+        boolean borrow = false;
+        Num result = new Num();
+        for (int i = 0; i < a.len - 2; i++) {
+            if (i < b.len - 2) {
+                if (borrow) {
+                    a.arr[i]--;
+
+                }
+
+                long temp = a.arr[i] - b.arr[i];
+                if (temp >= 0) {
+                    result.arr[i] = temp;
+                    borrow = false;
+                } else {
+                    result.arr[i] = temp + base;
+                    borrow = true;
+                }
+
+
+            } else {
+                if (borrow) {
+                    a.arr[i]--;
+                    if (a.arr[i] < 0) {
+                        result.arr[i] = a.arr[i] + base;
+                    } else {
+                        result.arr[i] = a.arr[i];
+                        borrow = false;
+                    }
+                } else {
+                    result.arr[i] = a.arr[i];
+                }
+
+
+            }
+        }
+        return result;
     }
 
     public static Num product(Num a, Num b) {
@@ -68,7 +140,9 @@ public class Num  implements Comparable<Num> {
         return null;
     }
 
-    public long base() { return base; }
+    public long base() {
+        return base;
+    }
 
     // Return number equal to "this" number, in base=newBase
     public Num convertBase(int newBase) {
@@ -97,11 +171,11 @@ public class Num  implements Comparable<Num> {
 
     public static void main(String[] args) {
         Num x = new Num(999);
-        Num y = new Num("8");
+        Num y = new Num("8999");
         Num z = Num.add(x, y);
         System.out.println(z);
         Num a = Num.power(x, 8);
         System.out.println(a);
-        if(z != null) z.printList();
+        if (z != null) z.printList();
     }
 }
