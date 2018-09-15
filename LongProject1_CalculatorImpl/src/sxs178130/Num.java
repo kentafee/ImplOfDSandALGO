@@ -30,6 +30,8 @@ public class Num implements Comparable<Num> {
     }
 
     public Num() {
+        arr = new long[200];
+
 
     }
 
@@ -41,13 +43,16 @@ public class Num implements Comparable<Num> {
 
     public static Num subtract(Num a, Num b) {
 
-        if (b.isNegative && !a.isNegative)
-            return add(a, b);
-        else if (a.isNegative && b.isNegative)
-            return subtract(b, a);
-        else if (a.isNegative && !b.isNegative)
-            return add(a, b);
 
+      Num result =  minus(a,b);
+
+//        if (b.isNegative && !a.isNegative)
+//            return add(a, b);
+//        else if (a.isNegative && b.isNegative)
+//            return subtract(b, a);
+//        else if (a.isNegative && !b.isNegative)
+//            return add(a, b);
+//
 
         if (a.len > b.len) {
 
@@ -56,7 +61,7 @@ public class Num implements Comparable<Num> {
         }
 
 
-        return null;
+        return result;
     }
 
     private static Num minus(Num a, Num b) {
@@ -170,10 +175,10 @@ public class Num implements Comparable<Num> {
 
 
     public static void main(String[] args) {
-        Num x = new Num(999);
-        Num y = new Num("8999");
-        Num z = Num.add(x, y);
-        System.out.println(z);
+        Num x = new Num("100");
+        Num y = new Num("5");
+        Num z = Num.subtract(x, y);
+        System.out.println(z.arr[0] + "---------" +z.arr[1]);
         Num a = Num.power(x, 8);
         System.out.println(a);
         if (z != null) z.printList();
