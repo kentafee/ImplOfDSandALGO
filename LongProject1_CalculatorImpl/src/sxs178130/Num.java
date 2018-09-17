@@ -35,6 +35,11 @@ public class Num implements Comparable<Num> {
 
     }
 
+    public Num(Num a)
+    {
+
+    }
+
     public static Num add(Num a, Num b) {
 
         return null;
@@ -112,10 +117,41 @@ public class Num implements Comparable<Num> {
         return null;
     }
 
+    
     // Use binary search to calculate a/b
     public static Num divide(Num a, Num b) {
-        return null;
+        Num start = new Num("0");
+        Num end = new Num(a);
+        while(true)
+        {
+            Num temp = add(start,end);
+            Num mid = add(start, temp.by2());
+
+            int comp = a.compareTo(product(mid,b));
+            if(comp == 0)
+            {
+                return mid;
+            }
+
+            else if(comp < 0)
+            {
+                if(b.compareTo(subtract(product(mid , b),a))>0)
+                    end = mid;
+                else
+                    return mid;
+
+            }
+
+            else {
+                if(b.compareTo(subtract(a,product(mid , b))) >0)
+                start = mid;
+                else
+                    return mid;
+            }
+        }
+
     }
+
 
     // return a%b
     public static Num mod(Num a, Num b) {
