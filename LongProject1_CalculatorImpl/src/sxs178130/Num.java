@@ -117,7 +117,7 @@ public class Num implements Comparable<Num> {
         return null;
     }
 
-    
+
     // Use binary search to calculate a/b
     public static Num divide(Num a, Num b) {
         Num start = new Num("0");
@@ -160,7 +160,8 @@ public class Num implements Comparable<Num> {
 
     // Use binary search
     public static Num squareRoot(Num a) {
-        return null;
+        Num result = new Num();
+        return  result;
     }
 
 
