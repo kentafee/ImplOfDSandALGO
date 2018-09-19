@@ -30,8 +30,8 @@ public class Num implements Comparable<Num> {
     public Num(long x) {
     }
 
-    public Num() {
-        arr = new long[200];
+    public Num(int size) {
+        arr = new long[size];
         len = 0;
 
 
@@ -40,7 +40,7 @@ public class Num implements Comparable<Num> {
     public Num(Num a) {
 
         this.len = a.len;
-        this.arr = new long[a.len];
+        this.arr = new long[a.arr.length];
 
         for(int i =0; i<len; i++)
         {
@@ -101,7 +101,7 @@ public class Num implements Comparable<Num> {
 
     private static Num minus(Num a, Num b) {
         boolean borrow = false;
-        Num result = new Num();
+        Num result = new Num( a.arr.length);
         result.len = a.len;
         for (int i = 0; i < a.len; i++) {
             if (i < b.len ) {
@@ -138,7 +138,7 @@ public class Num implements Comparable<Num> {
         }
 
 
-        while(result.len >0 && result.arr[result.len-1]==0)
+        while(result.len + 1 >0 && result.arr[result.len-1]==0)
             result.len--;
         return result;
     }
@@ -302,10 +302,10 @@ public class Num implements Comparable<Num> {
     // Divide by 2, for using in binary search
     public Num by2() {
         boolean borrow = false;
-        Num result = new Num();
-        int j = this.len - 3;
-        for (int i = this.len - 3; i >= 0; i--) {
-//    		System.out.println(i);
+        Num result = new Num(this.arr.length);
+        result.len = this.len;
+        int j = this.len - 1;
+        for (int i = this.len - 1; i >= 0; i--) {
             if (borrow) {
                 result.arr[j] = (this.arr[i] + base) / 2;
                 if ((this.arr[i] + base) % 2 == 1) {
@@ -325,6 +325,8 @@ public class Num implements Comparable<Num> {
             }
 
         }
+        while(result.len >1 && result.arr[result.len-1]==0)
+            result.len--;
         return result;
     }
 
@@ -346,6 +348,7 @@ public class Num implements Comparable<Num> {
     public static void main(String[] args) {
         Num x = new Num("1");
         Num y = new Num("1000");
+       Num b = x.by2();
         Num z = Num.subtract(x,y);
         System.out.println(z.arr[0] + "---------" + z.arr[1]);
         Num a = Num.power(x, 8);
