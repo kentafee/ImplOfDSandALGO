@@ -304,6 +304,7 @@ public class Num implements Comparable<Num> {
         boolean borrow = false;
         Num result = new Num(this.arr.length);
         result.len = this.len;
+        result.isNegative = this.isNegative;
         int j = this.len - 1;
         for (int i = this.len - 1; i >= 0; i--) {
             if (borrow) {
