@@ -17,8 +17,9 @@ public class Num implements Comparable<Num> {
         isNegative = (s.charAt(0) == '-') ? true : false;
         double Log_10B = Math.log10(this.base);
         int stringLength = (isNegative) ? s.length() - 1 : s.length();
-        len = (int) Math.ceil((stringLength + 1 / Log_10B) + 1);
-        arr = new long[len];
+        int length = (int) Math.ceil((stringLength + 1 / Log_10B) + 1);
+        this.len = stringLength;
+        arr = new long[length];
         for (int i = 0; i < stringLength; i++) {
             arr[i] = Character.getNumericValue(s.charAt(s.length() - 1 - i));
         }
@@ -31,6 +32,7 @@ public class Num implements Comparable<Num> {
 
     public Num() {
         arr = new long[200];
+        len = 0;
 
 
     }
@@ -56,22 +58,43 @@ public class Num implements Comparable<Num> {
     public static Num subtract(Num a, Num b) {
 
 
-        Num result = minus(a, b);
+        Num result;
 
-//        if (b.isNegative && !a.isNegative)
-//            return add(a, b);
-//        else if (a.isNegative && b.isNegative)
-//            return subtract(b, a);
-//        else if (a.isNegative && !b.isNegative)
-//            return add(a, b);
-//
+        if (b.isNegative && !a.isNegative)
+            return add(a, b);
+        else if (a.isNegative && b.isNegative)
+            return subtract(b, a);
+        else if (a.isNegative && !b.isNegative)
+            return add(a, b);
+
 
         if (a.len > b.len) {
-
-        } else {
-
+            result = minus(a, b);
+            result.isNegative = false;
         }
+        else if (a.len < b.len){
+            result = minus(b,a);
+            result.isNegative = true;
+        }
+        else
+        {
+            int index = a.len-1;
+            while(index >=0 && a.arr[index]==b.arr[index])
+                index--;
+            if(a.arr[index]>b.arr[index]){
+                result = minus(a,b);
+                result.isNegative = false;
+            }
+            else if(a.arr[index]<b.arr[index]){
+                result = minus(b,a);
+                result.isNegative = true;
+            }
 
+            else
+            {
+                result = new Num("0");
+            }
+        }
 
         return result;
     }
@@ -79,8 +102,9 @@ public class Num implements Comparable<Num> {
     private static Num minus(Num a, Num b) {
         boolean borrow = false;
         Num result = new Num();
-        for (int i = 0; i < a.len - 2; i++) {
-            if (i < b.len - 2) {
+        result.len = a.len;
+        for (int i = 0; i < a.len; i++) {
+            if (i < b.len ) {
                 if (borrow) {
                     a.arr[i]--;
 
@@ -112,6 +136,10 @@ public class Num implements Comparable<Num> {
 
             }
         }
+
+
+        while(result.len >0 && result.arr[result.len-1]==0)
+            result.len--;
         return result;
     }
 
@@ -316,9 +344,9 @@ public class Num implements Comparable<Num> {
 
 
     public static void main(String[] args) {
-        Num x = new Num("100");
-        Num y = new Num("5");
-        Num z = Num.squareRoot(x);
+        Num x = new Num("1");
+        Num y = new Num("1000");
+        Num z = Num.subtract(x,y);
         System.out.println(z.arr[0] + "---------" + z.arr[1]);
         Num a = Num.power(x, 8);
         System.out.println(a);
