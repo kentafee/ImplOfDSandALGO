@@ -35,8 +35,15 @@ public class Num implements Comparable<Num> {
 
     }
 
-    public Num(Num a)
-    {
+    public Num(Num a) {
+
+        this.len = a.len;
+        this.arr = new long[a.len];
+
+        for(int i =0; i<len; i++)
+        {
+            this.arr[i] = a.arr[i];
+        }
 
     }
 
@@ -49,7 +56,7 @@ public class Num implements Comparable<Num> {
     public static Num subtract(Num a, Num b) {
 
 
-      Num result =  minus(a,b);
+        Num result = minus(a, b);
 
 //        if (b.isNegative && !a.isNegative)
 //            return add(a, b);
@@ -122,29 +129,22 @@ public class Num implements Comparable<Num> {
     public static Num divide(Num a, Num b) {
         Num start = new Num("0");
         Num end = new Num(a);
-        while(true)
-        {
-            Num temp = add(start,end);
+        while (true) {
+            Num temp = add(start, end);
             Num mid = add(start, temp.by2());
 
-            int comp = a.compareTo(product(mid,b));
-            if(comp == 0)
-            {
+            int comp = a.compareTo(product(mid, b));
+            if (comp == 0) {
                 return mid;
-            }
-
-            else if(comp < 0)
-            {
-                if(b.compareTo(subtract(product(mid , b),a))>0)
+            } else if (comp < 0) {
+                if (b.compareTo(subtract(product(mid, b), a)) > 0)
                     end = mid;
                 else
-                    return mid;
+                    return subtract(mid, new Num(1));
 
-            }
-
-            else {
-                if(b.compareTo(subtract(a,product(mid , b))) >0)
-                start = mid;
+            } else {
+                if (b.compareTo(subtract(a, product(mid, b))) > 0)
+                    start = mid;
                 else
                     return mid;
             }
@@ -155,21 +155,101 @@ public class Num implements Comparable<Num> {
 
     // return a%b
     public static Num mod(Num a, Num b) {
-        return null;
+
+        Num start = new Num("0");
+        Num end = new Num(a);
+        while (true) {
+            Num temp = add(start, end);
+            Num mid = add(start, temp.by2());
+
+            int comp = a.compareTo(product(mid, b));
+            if (comp == 0) {
+                return new Num("0");
+            } else if (comp < 0) {
+                if (b.compareTo(subtract(product(mid, b), a)) > 0)
+                    end = mid;
+                else
+                    return subtract(product(mid, b), a);
+
+            } else {
+                if (b.compareTo(subtract(a, product(mid, b))) > 0)
+                    start = mid;
+                else
+                    return subtract(a, product(mid, b));
+            }
+        }
+
+
     }
 
     // Use binary search
     public static Num squareRoot(Num a) {
-        Num result = new Num();
-        return  result;
+        Num start = new Num("0");
+        Num end = new Num(a);
+        while (true) {
+            Num temp = add(start, end);
+            Num mid = add(start, temp.by2());
+
+            int comp = a.compareTo(product(mid, mid));
+            if (comp == 0) {
+                return mid;
+            } else if (comp > 0) {
+                if (mid.compareTo(subtract(a,product(mid, mid))) > 0)
+                    start = mid;
+                else
+                    return mid;
+
+            } else {
+                if (mid.compareTo(subtract( product(mid, mid),a)) > 0)
+                    end = mid;
+                else
+                    return subtract(mid, new Num(1));
+            }
+        }
+
+
     }
 
 
     // Utility functions
     // compare "this" to "other": return +1 if this is greater, 0 if equal, -1 otherwise
     public int compareTo(Num other) {
-        return 0;
+        if (this.isNegative && !other.isNegative) {
+            return -1;
+        } else if (!this.isNegative && other.isNegative) {
+            return 1;
+        } else if (!this.isNegative && !other.isNegative) {
+            if (this.len > other.len) {
+                return 1;
+            } else if (this.len < other.len) {
+                return -1;
+            } else {
+                int i = this.len - 1;
+                while (this.arr[i] == other.arr[i]) {
+                    if (i == 0) {
+                        return 0;
+                    }
+                    i--;
+                }
+                return (this.arr[i] > other.arr[i]) ? 1 : -1;
+            }
+        } else {
+            this.isNegative = false;
+            other.isNegative = false;
+            int result = this.compareTo(other);
+            this.isNegative = true;
+            other.isNegative = true;
+            if (result == 1) {
+                return -1;
+            } else if (result == -1) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
     }
+
 
     // Output using the format "base: elements of list ..."
     // For example, if base=100, and the number stored corresponds to 10965,
@@ -193,7 +273,31 @@ public class Num implements Comparable<Num> {
 
     // Divide by 2, for using in binary search
     public Num by2() {
-        return null;
+        boolean borrow = false;
+        Num result = new Num();
+        int j = this.len - 3;
+        for (int i = this.len - 3; i >= 0; i--) {
+//    		System.out.println(i);
+            if (borrow) {
+                result.arr[j] = (this.arr[i] + base) / 2;
+                if ((this.arr[i] + base) % 2 == 1) {
+                    borrow = true;
+                } else {
+                    borrow = false;
+                }
+                j--;
+            } else {
+                result.arr[j] = this.arr[i] / 2;
+                if (this.arr[i] % 2 == 1) {
+                    borrow = true;
+                } else {
+                    borrow = false;
+                }
+                j--;
+            }
+
+        }
+        return result;
     }
 
     // Evaluate an expression in postfix and return resulting number
@@ -214,10 +318,13 @@ public class Num implements Comparable<Num> {
     public static void main(String[] args) {
         Num x = new Num("100");
         Num y = new Num("5");
-        Num z = Num.subtract(x, y);
-        System.out.println(z.arr[0] + "---------" +z.arr[1]);
+        Num z = Num.squareRoot(x);
+        System.out.println(z.arr[0] + "---------" + z.arr[1]);
         Num a = Num.power(x, 8);
         System.out.println(a);
         if (z != null) z.printList();
     }
 }
+
+
+
