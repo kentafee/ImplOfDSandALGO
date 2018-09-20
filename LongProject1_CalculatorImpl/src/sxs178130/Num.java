@@ -50,8 +50,62 @@ public class Num implements Comparable<Num> {
     }
 
     public static Num add(Num a, Num b) {
+        long carry=0;
+        Num newNumber = null;
+        Num extra=null;
+        if(a.isNegative && b.isNegative || !a.isNegative && !b.isNegative){
+            int i;
+            long addition=0;
+            if(a.len>=b.len){
+                newNumber = new Num(a.toString());
+                for(i=0;i<b.len;i++){
+                    addition = newNumber.arr[i]+b.arr[i]+carry;
+                    newNumber.arr[i]=addition%a.base;
+                    carry=addition/a.base;
+                }
+                while(carry!=0){
 
-        return null;
+                    addition=newNumber.arr[i]+carry;
+                    newNumber.arr[i]=(addition)%a.base;
+                    carry=addition/a.base;
+                    if(i==newNumber.len){
+                        newNumber.len++;
+                    }
+                    i++;
+                }
+            }else{
+                newNumber = new Num(b.toString());
+                for(i=0;i<a.len;i++){
+                    addition = newNumber.arr[i]+a.arr[i]+carry;
+                    newNumber.arr[i]=addition%a.base;
+                    carry=addition/a.base;
+                }
+                while(carry!=0){
+
+                    addition=newNumber.arr[i]+carry;
+                    newNumber.arr[i]=(addition)%a.base;
+                    carry=addition/a.base;
+                    if(i==newNumber.len){
+                        newNumber.len++;
+                    }
+                    i++;
+                }
+
+            }
+            newNumber.isNegative=(a.isNegative)?true:false;
+
+        }
+        else if(!a.isNegative && b.isNegative){
+            extra=new Num(b.toString());
+            extra.isNegative=false;
+            newNumber=subtract(a,extra);
+        }
+        else if(a.isNegative && !b.isNegative){
+            extra=new Num(a.toString());
+            extra.isNegative=false;
+            newNumber=subtract(b,extra);
+        }
+        return newNumber;
     }
 
 
@@ -287,8 +341,16 @@ public class Num implements Comparable<Num> {
 
     // Return number to a string in base 10
     public String toString() {
-        return null;
+        StringBuilder strbase10 = new StringBuilder();
+        if(isNegative){
+            strbase10.append('-');
+        }
+        for(int i=len-1;i>=0;i--){
+            strbase10.append(arr[i]);
+        }
+        return strbase10.toString();
     }
+
 
     public long base() {
         return base;
@@ -349,8 +411,7 @@ public class Num implements Comparable<Num> {
     public static void main(String[] args) {
         Num x = new Num("1");
         Num y = new Num("1000");
-       Num b = x.by2();
-        Num z = Num.subtract(x,y);
+        Num z = Num.squareRoot(y);
         System.out.println(z.arr[0] + "---------" + z.arr[1]);
         Num a = Num.power(x, 8);
         System.out.println(a);
