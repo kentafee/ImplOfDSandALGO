@@ -198,7 +198,53 @@ public class Num implements Comparable<Num> {
     }
 
     public static Num product(Num a, Num b) {
-        return null;
+        Num first=new Num(a.toString());
+        Num second=new Num(b.toString());
+        if(first.isNegative){
+            first.isNegative=false;
+        }
+        if(second.isNegative){
+            second.isNegative=false;
+        }
+        Num temp=null;
+        Num result=null;
+        long digit_mul=0;
+        long carry=0;
+        if(first.compareTo(second)==-1){
+            temp=first;
+            first=second;
+            second=temp;
+        }
+        StringBuilder res=new StringBuilder();
+        for(int i=0;i<a.len+b.len;i++){
+            res.append('0');
+        }
+        result=new Num(res.toString());
+        StringBuilder[] iter_str=new StringBuilder[second.len];
+        for(int i=0;i<second.len;i++){
+            iter_str[i]=new StringBuilder();
+            for(int j=0;j<first.len;j++){
+                digit_mul=(second.arr[i]*first.arr[j])+carry;
+                carry=digit_mul/a.base;
+                iter_str[i].insert(0,digit_mul%a.base);
+            }
+            if(carry!=0L) {
+                iter_str[i].insert(0, carry);
+            }
+            carry=0;
+            for(int k=1;k<=i;k++){
+                iter_str[i].append('0');
+            }
+        }
+        Num addition = new Num("0");
+        for(int i=0;i<iter_str.length;i++){
+            System.out.println(iter_str[i]);
+            addition = add(addition,new Num(iter_str[i].toString()));
+        }
+        if(a.isNegative && !b.isNegative || !a.isNegative && b.isNegative ){
+            addition.isNegative = true;
+        }
+        return addition;
     }
 
     // Use divide and conquer
