@@ -33,6 +33,7 @@ public class Num implements Comparable<Num> {
     public Num(int size) {
         arr = new long[size];
         len = 0;
+        isNegative = false;
 
 
     }
