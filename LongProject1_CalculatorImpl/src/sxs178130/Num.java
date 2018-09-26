@@ -160,7 +160,7 @@ public class Num implements Comparable<Num> {
             return result;
         }
         else if (a.isNegative && b.isNegative)
-            return subtract(b, a);
+             subtract(b1, a1);
         else if (a.isNegative && !b.isNegative) {
             result = add(a1, b1);
             result.isNegative = true;
@@ -313,7 +313,23 @@ return result;
 
     // Use divide and conquer
     public static Num power(Num a, long n) {
-        return null;
+
+        Num pow = null;
+
+        if(n == 0)
+            return new Num((long)1);
+        else if(n == 1)
+            return new Num(a);
+        else if(n == 2)
+           return product(a,a);
+        else
+        {
+            if(n%2 == 0)
+                pow = product(power(a,n/2), power(a, n/2));
+            else
+                pow = product(power(a,(n-1)/2), power(a, (n+1)/2));
+        }
+       return pow;
     }
 
 
@@ -709,19 +725,18 @@ return result;
 
 
     public static void main(String[] args) {
-        Num x = new Num("9889");
-        Num y = new Num("13");
-        Num z = Num.add(x, y);
+        Num x = new Num("-234234");
+        Num y = new Num("-12352");
+        Num z = Num.subtract(x, y);
         Num d = Num.add(x, y);
-//        Num f = Num.add(z,d);
+        Num f = Num.add(z,d);
         Num mult = Num.product(x,y);
         Num divide = Num.divide(x, y);
         Num sqrt = Num.squareRoot(x);
         Num mod = Num.mod(x, y);
         System.out.println(z.arr[0] + "---------" + z.arr[1]);
-        Num a = Num.power(x, 8);
-        System.out.println(a);
-        if (z != null) z.printList();
+        Num a = Num.power(x, 5);
+
     }
 }
 
