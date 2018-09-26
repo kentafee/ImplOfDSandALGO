@@ -78,8 +78,7 @@ public class Num implements Comparable<Num> {
         long carry=0;
         int req_len = Math.max(a.len,b.len);
         Num newNumber = new Num (req_len + 1);
-        newNumber.len = req_len;
-        Num extra=null;
+        Num extra;
 
         if(a.isNegative && b.isNegative || !a.isNegative && !b.isNegative){
             int i;
@@ -90,24 +89,41 @@ public class Num implements Comparable<Num> {
             for(i=0;i<min_len;i++){
                 addition = a.arr[i]+b.arr[i]+carry;
                 newNumber.arr[i]=addition%a.base;
-                //System.out.print( newNumber.arr[i]);
+                newNumber.len++;
                 carry=addition/a.base;
             }
-            while(i<req_len || carry!=0){
-                if(i>=b.len){
-                    addition=a.arr[i]+carry;
-                }
-                if(i>=a.len){
+
+            if(i == a.len)
+            {
+                while(i<b.len)
+                {
                     addition=b.arr[i]+carry;
-                }
-                newNumber.arr[i]=(addition)%a.base;
-                //System.out.print( newNumber.arr[i]);
-                carry=addition/a.base;
-                if(i==newNumber.len){
+                    newNumber.arr[i]=(addition)%b.base;
+                    carry=addition/b.base;
                     newNumber.len++;
+                    i++;
                 }
-                i++;
+
             }
+
+            else if(i == b.len)
+            {
+                while(i<a.len)
+                {
+                    newNumber.len++;
+                    addition=a.arr[i]+carry;
+                    newNumber.arr[i]=(addition)%a.base;
+                    carry=addition/a.base;
+                    i++;
+                }
+            }
+
+            if(carry !=0)
+            {
+                newNumber.arr[i]=carry;
+                newNumber.len++;
+            }
+
 
             newNumber.isNegative=(a.isNegative)?true:false;
 
@@ -153,23 +169,23 @@ public class Num implements Comparable<Num> {
 
 
         if (a.len > b.len) {
-            result = minus(a, b);
+            result = minus(a1, b1);
             result.isNegative = false;
         } else if (a.len < b.len) {
-            result = minus(b, a);
+            result = minus(b1, a1);
             result.isNegative = true;
         } else {
             int index = a.len - 1;
             while (index >= 0 && a.arr[index] == b.arr[index])
                 index--;
             if (a.arr[index] > b.arr[index]) {
-                result = minus(a, b);
+                result = minus(a1, b1);
                 result.isNegative = false;
             } else if (a.arr[index] < b.arr[index]) {
-                result = minus(b, a);
+                result = minus(b1, a1);
                 result.isNegative = true;
             } else {
-                result = new Num("0");
+                result = new Num((long)0);
             }
         }
 
@@ -239,7 +255,8 @@ public class Num implements Comparable<Num> {
 
 
 
-        Num sum = new Num(a.len+b.len);
+        Num sum = new Num(a.len+b.len+2);
+        sum.len=1;
         Num zero = new Num((long)0);
         if(a.compareTo(zero)==0 || b.compareTo(zero)==0) {
              sum.len=1;
@@ -304,15 +321,15 @@ return result;
 
 
         if (a.compareTo(b) < 0)
-            return new Num("0");
+            return new Num((long)0);
 
-        else if (b.compareTo(new Num("1")) == 0)
+        else if (b.compareTo(new Num((long)1)) == 0)
             return new Num(a);
 
 
         else {
 
-            Num start = new Num("0");
+            Num start = new Num((long)0);
             Num end = new Num(a);
 
             while (true) {
@@ -692,13 +709,15 @@ return result;
 
 
     public static void main(String[] args) {
-        Num x = new Num("1232");
-        Num y = new Num("1342342");
-        Num z = Num.subtract(x, y);
-        Num mult = Num.product(y,x);
-//        Num divide = Num.divide(x, y);
-//        Num sqrt = Num.squareRoot(x);
-//        Num mod = Num.mod(x, y);
+        Num x = new Num("9889");
+        Num y = new Num("13");
+        Num z = Num.add(x, y);
+        Num d = Num.add(x, y);
+//        Num f = Num.add(z,d);
+        Num mult = Num.product(x,y);
+        Num divide = Num.divide(x, y);
+        Num sqrt = Num.squareRoot(x);
+        Num mod = Num.mod(x, y);
         System.out.println(z.arr[0] + "---------" + z.arr[1]);
         Num a = Num.power(x, 8);
         System.out.println(a);
