@@ -7,7 +7,7 @@ import java.util.*;
 public class Num implements Comparable<Num> {
 
     static long defaultBase = 10;  // Change as needed
-    static long base = defaultBase;  // Change as needed
+    long base = defaultBase;  // Change as needed
     long[] arr;  // array to store arbitrarily large integers
     boolean isNegative;  // boolean flag to represent negative numbers
     int len;  // actual number of elements of array that are used;  number is stored in arr[0..len-1]
@@ -34,6 +34,34 @@ public class Num implements Comparable<Num> {
         return length;
     }
 
+
+//    public Num(long x, int base) {
+//        isNegative = (x<0)?true:false;
+//        long num=x;
+//        int digit_count=0;
+//        while(num != 0)
+//        {
+//            num /= base;
+//            ++digit_count;
+//        }
+//        len=digit_count;
+//        if(x==0)
+//        {
+//            len = 1;
+//        }
+//
+//        int length = (int) Math.ceil((len + 1 / Math.log10(this.base())) + 1);
+//        arr = new long[length];
+//        num=x;
+//        int i=0;
+//        while(num!=0){
+//            arr[i] = num%10;
+//            num /= 10;
+//            i++;
+//        }
+//
+//
+//    }
 
     public Num(long x) {
         isNegative = (x<0)?true:false;
@@ -216,7 +244,7 @@ public class Num implements Comparable<Num> {
                     result.arr[i] = temp;
                     borrow = false;
                 } else {
-                    result.arr[i] = temp + base;
+                    result.arr[i] = temp + a.base;
                     borrow = true;
                 }
 
@@ -225,7 +253,7 @@ public class Num implements Comparable<Num> {
                 if (borrow) {
                     a.arr[i]--;
                     if (a.arr[i] < 0) {
-                        result.arr[i] = a.arr[i] + base;
+                        result.arr[i] = a.arr[i] + a.base;
                     } else {
                         result.arr[i] = a.arr[i];
                         borrow = false;
@@ -564,8 +592,23 @@ return result;
     // Return number equal to "this" number, in base=newBase
     public Num convertBase(int newBase) {
 
-        Num result = new Num(lengthInDiffBase(this.len,newBase));
-        return null;
+       Num result = new Num(0L);
+       result.base = newBase;
+
+        Num oldBaseInNewBase = new Num(this.base, newBase);
+        for(int i = this.len-1; i>=1; i--)
+        {
+            Num temp = new Num(this.arr[i],newBase);
+            temp.base = newBase;
+            result = add(temp ,result);
+            result = product(result,oldBaseInNewBase);
+        }
+
+
+        result = add(new Num(this.arr[0]),result);
+
+
+        return result;
     }
 
     // Divide by 2, for using in binary search
@@ -735,38 +778,46 @@ return result;
 
     private Num(long x, long b) {
         long temp = x;
-        Stack<Long> stack = new Stack<>();
-        long newVal = 0;
+        Deque<Long> stack = new ArrayDeque<>();
         while(true) {
-            System.out.println(temp);
             stack.push(temp%b);
             temp = temp/b;
             if(temp==0) {
-                System.out.println("temp ==0");
                 break;
             }
         }
-        System.out.println("Stack Elements");
+
+        arr = new long[stack.size()+2];
+        len = 0;
+        isNegative = false;
+        int i =0;
         while(!stack.isEmpty()) {
-            System.out.println(stack.peek());
-            newVal = newVal * 10 + stack.pop();
+            this.arr[i] = stack.removeLast();
+            this.len++;
+            i++;
         }
-        System.out.println(newVal);
+
     }
 
 
     public static void main(String[] args) {
-        Num x = new Num("-234234");
-        Num y = new Num("-12352");
-        Num z = Num.subtract(x, y);
-        Num d = Num.add(x, y);
-        Num f = Num.add(z,d);
-        Num mult = Num.product(x,y);
-        Num divide = Num.divide(x, y);
-        Num sqrt = Num.squareRoot(x);
-        Num mod = Num.mod(x, y);
-        System.out.println(z.arr[0] + "---------" + z.arr[1]);
-        Num a = Num.power(x, 5);
+
+
+        Num base = new Num(129L,13L);
+
+        Num x = new Num("129");
+
+        Num y = x.convertBase(13);
+//        Num y = new Num("9");
+//        Num z = Num.subtract(x, y);
+//        Num d = Num.add(x, y);
+//        Num f = Num.add(z,d);
+ //       Num newBase = Num.add(x,y);
+//        Num divide = Num.divide(x, y);
+//        Num sqrt = Num.squareRoot(x);
+//        Num mod = Num.mod(x, y);
+//        System.out.println(z.arr[0] + "---------" + z.arr[1]);
+//        Num a = Num.power(x, 5);
 
     }
 }
