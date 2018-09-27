@@ -4,9 +4,7 @@
 
 package sxs178130;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.util.*;
 
 public class BinarySearchTree<T extends Comparable<? super T>> implements Iterable<T> {
     static class Entry<T> {
@@ -22,6 +20,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
 
     Entry<T> root;
     int size;
+    Deque<Entry<T>> stack = new ArrayDeque<>();
 
     public BinarySearchTree() {
         root = null;
@@ -32,7 +31,11 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
     /** TO DO: Is x contained in tree?
      */
     public boolean contains(T x) {
-        return false;
+
+        Entry<T> t = find(x);
+        if(t == null || t.element.compareTo(x)!=0)
+            return false;
+        return true;
     }
 
     /** TO DO: Is there an element that is equal to x in the tree?
@@ -47,6 +50,32 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
      *  Returns true if x is a new element added to tree.
      */
     public boolean add(T x) {
+        if(size == 0) {
+            root = new Entry<>(x, null, null);
+            size++;
+            return true;
+        }
+        else
+        {
+            Entry<T> t = find(x);
+
+            if(t.element.compareTo(x)==0)
+            {
+                t.element = x;
+                return false;
+            }
+
+            else if(t.element.compareTo(x)>0) {
+                t.left = new Entry<>(x, null, null);
+                size++;
+            }
+            else {
+                t.right = new Entry<>(x, null, null);
+                size++;
+            }
+
+        }
+
         return true;
     }
 
@@ -58,11 +87,25 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
     }
 
     public T min() {
-        return null;
+        if(size == 0)
+            return null;
+        Entry<T> t = root;
+
+        while(t.left != null)
+            t = t.left;
+        return t.element;
     }
 
     public T max() {
+        if(size==0)
         return null;
+
+        Entry<T> t =root;
+
+        while(t.right!=null)
+            t =t.right;
+
+        return t.element;
     }
 
     // TODO: Create an array with the elements using in-order traversal of tree
@@ -73,6 +116,40 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
     }
 
 
+    public Entry<T> find(T x)
+    {
+
+        stack.addFirst(null);
+        return find(this.root,x);
+
+    }
+
+    private Entry<T> find(Entry<T> tEntry, T x) {
+        if(tEntry == null || (tEntry.element.compareTo(x)==0))
+            return tEntry;
+        while (true) {
+            if (tEntry.element.compareTo(x) < 0) {
+                if (tEntry.left == null)
+                    break;
+                else {
+                    stack.addFirst(tEntry);
+                    tEntry = tEntry.right;
+                }
+            }
+            else if(tEntry.element.compareTo(x)==0)
+                break;
+            else {
+                if (tEntry.right == null)
+                    break;
+                else {
+                    stack.addFirst(tEntry);
+                    tEntry = tEntry.right;
+                }
+            }
+
+        }
+return tEntry;
+    }
 // Start of Optional problem 2
 
     /** Optional problem 2: Iterate elements in sorted order of keys

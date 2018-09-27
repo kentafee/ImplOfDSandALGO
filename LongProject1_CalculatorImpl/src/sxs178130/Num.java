@@ -27,6 +27,14 @@ public class Num implements Comparable<Num> {
 
     }
 
+    private int lengthInDiffBase( int len, int base)
+    {
+        double Log_10B = Math.log10(base);
+        int length = (int) Math.ceil((len + 1 / Log_10B) + 1);
+        return length;
+    }
+
+
     public Num(long x) {
         isNegative = (x<0)?true:false;
         long num=x;
@@ -555,6 +563,8 @@ return result;
 
     // Return number equal to "this" number, in base=newBase
     public Num convertBase(int newBase) {
+
+        Num result = new Num(lengthInDiffBase(this.len,newBase));
         return null;
     }
 
@@ -602,33 +612,31 @@ return result;
     private static Num eval(String operator, Num temp1, Num temp2) {
         switch(operator) {
             case "+":{
-                System.out.println("Call Addition");
-                break;
+                System.out.println(temp2 +" + "+ temp1);
+                return add(temp2, temp1);
             }
             case "-":{
-                System.out.println("Call Substraction");
-                break;
+                System.out.println(temp2 + " - " + temp1);
+                return subtract(temp2, temp1);
             }
             case "*":{
-                System.out.println("Call Multiplication");
-                break;
+                System.out.println(temp2 + " * " + temp1);
+                return product(temp2, temp1);
             }
             case "/":{
-                System.out.println("Call Division");
-                break;
+                System.out.println(temp2 + " / " + temp1);
+                return divide(temp2, temp1);
             }
             case "%":{
-                System.out.println("Call Modulo");
-                break;
+                System.out.println(temp2+ " % "+ temp1);
+                return mod(temp2, temp1);
             }
             case "^":{
                 System.out.println("Call Power");
-                break;
             }
         }
         return null;
     }
-
 
     // Evaluate an expression in postfix and return resulting number
     // Each string is one of: "*", "+", "-", "/", "%", "^", "0", or
@@ -641,13 +649,14 @@ return result;
         for(int i  = 0; i < expr.length; i++) {
             String token = expr[i];
             if(!isOperand(token)) {
-                System.out.println(token);
+//                System.out.println(token);
                 stack.push(new Num(token));
             }
             else {
                 temp1 = stack.pop();
                 temp2 = stack.pop();
                 stack.push(eval(token, temp1, temp2));
+                System.out.println("Result-> " + stack.peek());
             }
         }
         return stack.pop();
@@ -721,6 +730,28 @@ return result;
         System.out.println(output);
         String[] temp = output.toArray(new String[0]);
         return evaluatePostfix(temp);
+    }
+
+
+    private Num(long x, long b) {
+        long temp = x;
+        Stack<Long> stack = new Stack<>();
+        long newVal = 0;
+        while(true) {
+            System.out.println(temp);
+            stack.push(temp%b);
+            temp = temp/b;
+            if(temp==0) {
+                System.out.println("temp ==0");
+                break;
+            }
+        }
+        System.out.println("Stack Elements");
+        while(!stack.isEmpty()) {
+            System.out.println(stack.peek());
+            newVal = newVal * 10 + stack.pop();
+        }
+        System.out.println(newVal);
     }
 
 
