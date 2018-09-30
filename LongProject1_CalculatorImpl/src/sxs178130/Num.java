@@ -1,6 +1,4 @@
 package sxs178130;
-// Starter code for lp1.
-// Version 1.0 (8:00 PM, Wed, Sep 5).
 import java.util.*;
 
 
@@ -55,8 +53,8 @@ public class Num implements Comparable<Num> {
 //        num=x;
 //        int i=0;
 //        while(num!=0){
-//            arr[i] = num%10;
-//            num /= 10;
+//            arr[i] = num%base;
+//            num /= base;
 //            i++;
 //        }
 //
@@ -103,7 +101,7 @@ public class Num implements Comparable<Num> {
 
         this.len = a.len;
         this.arr = new long[a.arr.length];
-
+        this.base=a.base;
         for (int i = 0; i < len; i++) {
             this.arr[i] = a.arr[i];
         }
@@ -114,6 +112,7 @@ public class Num implements Comparable<Num> {
         long carry=0;
         int req_len = Math.max(a.len,b.len);
         Num newNumber = new Num (req_len + 1);
+        newNumber.base=a.base;
         Num extra;
 
         if(a.isNegative && b.isNegative || !a.isNegative && !b.isNegative){
@@ -196,7 +195,7 @@ public class Num implements Comparable<Num> {
             return result;
         }
         else if (a.isNegative && b.isNegative)
-             subtract(b1, a1);
+            subtract(b1, a1);
         else if (a.isNegative && !b.isNegative) {
             result = add(a1, b1);
             result.isNegative = true;
@@ -292,15 +291,17 @@ public class Num implements Comparable<Num> {
 
 
         Num sum = new Num(a.len+b.len+2);
+        sum.base=a.base;
         sum.len=1;
         Num zero = new Num((long)0);
+        zero.base=a.base;
         if(a.compareTo(zero)==0 || b.compareTo(zero)==0) {
-             sum.len=1;
-             return sum;
+            sum.len=1;
+            return sum;
         }
-            for (int j = 0; j < second.len; j++) {
+        for (int j = 0; j < second.len; j++) {
 
-                sum = add(sum, shift(multiply(first,second.arr[j]),j));
+            sum = add(sum, shift(multiply(first,second.arr[j]),j));
 
         }
 
@@ -315,6 +316,7 @@ public class Num implements Comparable<Num> {
     private static Num multiply(Num a, long x)
     {
         Num result = new Num(a.len+1);
+        result.base=a.base;
         long carry = 0;
         for(int i=0; i<a.len;i++)
         {
@@ -333,6 +335,7 @@ public class Num implements Comparable<Num> {
     private static Num  shift(Num a , int x)
     {
         Num result = new Num(a.len+x);
+        result.base=a.base;
         int index = 0;
 
         while(index < x) {
@@ -344,7 +347,7 @@ public class Num implements Comparable<Num> {
             result.arr[index++]= a.arr[i];
             result.len++;
         }
-return result;
+        return result;
     }
 
     // Use divide and conquer
@@ -357,7 +360,7 @@ return result;
         else if(n == 1)
             return new Num(a);
         else if(n == 2)
-           return product(a,a);
+            return product(a,a);
         else
         {
             if(n%2 == 0)
@@ -365,7 +368,7 @@ return result;
             else
                 pow = product(power(a,(n-1)/2), power(a, (n+1)/2));
         }
-       return pow;
+        return pow;
     }
 
 
@@ -423,7 +426,7 @@ return result;
 
             if (a.isNegative ^ b.isNegative)
                 if(!(result.compareTo(new Num("0"))==0))
-                result.isNegative = true;
+                    result.isNegative = true;
         }
 
         return result;
@@ -470,19 +473,19 @@ return result;
 
 
 
-            Num a1 = new Num(a);
-            a1.isNegative = false;
-            Num b1 = new Num(b);
-            b1.isNegative = false;
+        Num a1 = new Num(a);
+        a1.isNegative = false;
+        Num b1 = new Num(b);
+        b1.isNegative = false;
 
 
-            result = modulus(a1,b1);
+        result = modulus(a1,b1);
 
-            if(a.isNegative&& (a1.compareTo(b1)!=0))
-                result = subtract(b1,result);
+        if(a.isNegative&& (a1.compareTo(b1)!=0))
+            result = subtract(b1,result);
 
 
-       return result;
+        return result;
 
     }
 
@@ -592,8 +595,8 @@ return result;
     // Return number equal to "this" number, in base=newBase
     public Num convertBase(int newBase) {
 
-       Num result = new Num(0L);
-       result.base = newBase;
+        Num result = new Num(0L);
+        result.base = newBase;
 
         Num oldBaseInNewBase = new Num(this.base, newBase);
         for(int i = this.len-1; i>=1; i--)
@@ -604,8 +607,9 @@ return result;
             result = product(result,oldBaseInNewBase);
         }
 
-
-        result = add(new Num(this.arr[0]),result);
+        Num temp=new Num(this.arr[0],newBase);
+        temp.base=newBase;
+        result = add(temp,result);
 
 
         return result;
@@ -778,6 +782,7 @@ return result;
 
     private Num(long x, long b) {
         long temp = x;
+        this.base=b;
         Deque<Long> stack = new ArrayDeque<>();
         while(true) {
             stack.push(temp%b);
@@ -803,16 +808,18 @@ return result;
     public static void main(String[] args) {
 
 
-        Num base = new Num(129L,13L);
+        //Num base = new Num(129L,13L);
+        // System.out.println(base);
+        Num x = new Num(1345678L);
+        //System.out.println(x);
 
-        Num x = new Num("129");
-
-        Num y = x.convertBase(13);
+        Num y = x.convertBase(24);
+        System.out.println(y);
 //        Num y = new Num("9");
 //        Num z = Num.subtract(x, y);
 //        Num d = Num.add(x, y);
 //        Num f = Num.add(z,d);
- //       Num newBase = Num.add(x,y);
+        //       Num newBase = Num.add(x,y);
 //        Num divide = Num.divide(x, y);
 //        Num sqrt = Num.squareRoot(x);
 //        Num mod = Num.mod(x, y);
@@ -821,6 +828,3 @@ return result;
 
     }
 }
-
-
-
