@@ -484,8 +484,8 @@ public class Num implements Comparable<Num> {
 
         result = modulus(a1,b1);
 
-        if(a.isNegative&& (a1.compareTo(b1)!=0))
-            result = subtract(b1,result);
+//        if(a.isNegative&& (a1.compareTo(b1)!=0))
+//            result = subtract(b1,result);
 
 
         return result;
