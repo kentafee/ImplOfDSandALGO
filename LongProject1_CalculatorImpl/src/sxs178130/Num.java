@@ -63,7 +63,7 @@ public class Num implements Comparable<Num> {
 
     public Num(long x) {
         isNegative = (x<0)?true:false;
-        long num=x;
+        long num=Math.abs(x);
         int digit_count=0;
         while(num != 0)
         {
@@ -78,7 +78,7 @@ public class Num implements Comparable<Num> {
 
         int length = (int) Math.ceil((len + 1 / Math.log10(this.base())) + 1);
         arr = new long[length];
-        num=x;
+        num=Math.abs(x);
         int i=0;
         while(num!=0){
             arr[i] = num%10;
@@ -105,6 +105,7 @@ public class Num implements Comparable<Num> {
         for (int i = 0; i < len; i++) {
             this.arr[i] = a.arr[i];
         }
+        this.isNegative = a.isNegative;
 
     }
 
@@ -353,10 +354,12 @@ public class Num implements Comparable<Num> {
     // Use divide and conquer
     public static Num power(Num a, long n) {
 
-        Num pow = null;
+        Num pow;
 
+        if(n<0)
+            return new Num(0L);
         if(n == 0)
-            return new Num((long)1);
+            return new Num(1L);
         else if(n == 1)
             return new Num(a);
         else if(n == 2)
@@ -413,7 +416,7 @@ public class Num implements Comparable<Num> {
     public static Num divide(Num a, Num b) {
 
         Num result = null;
-        if (b.compareTo(new Num("0")) == 0)
+        if (b.compareTo(new Num(0L)) == 0)
             return result;
 
         else {
@@ -425,7 +428,7 @@ public class Num implements Comparable<Num> {
             result = div(a1, b1);
 
             if (a.isNegative ^ b.isNegative)
-                if(!(result.compareTo(new Num("0"))==0))
+                if(!(result.compareTo(new Num(0L))==0))
                     result.isNegative = true;
         }
 
@@ -435,7 +438,7 @@ public class Num implements Comparable<Num> {
 
     private static Num modulus(Num a, Num b) {
 
-        Num start = new Num("0");
+        Num start = new Num(0L);
         Num end = new Num(a);
 
         if (b.compareTo(start) == 0 || a.compareTo(start) == 0 || b.compareTo(new Num("1")) == 0)
@@ -451,7 +454,7 @@ public class Num implements Comparable<Num> {
 
                 int comp = a.compareTo(product(mid, b));
                 if (comp == 0) {
-                    return new Num("0");
+                    return new Num(0L);
                 } else if (comp < 0) {
                     end = mid;
 
@@ -492,13 +495,13 @@ public class Num implements Comparable<Num> {
     // Use binary search
     public static Num squareRoot(Num a) {
 
-        if (a.compareTo(new Num("0")) == 0 || a.compareTo(new Num("1")) == 0)
+        if (a.compareTo(new Num(0L)) == 0 || a.compareTo(new Num("1")) == 0)
             return new Num(a);
         else if (a.isNegative)
             return null;
 
         else {
-            Num start = new Num("0");
+            Num start = new Num(0L);
             Num end = new Num(a);
 
             while (true) {
@@ -810,21 +813,20 @@ public class Num implements Comparable<Num> {
 
         //Num base = new Num(129L,13L);
         // System.out.println(base);
-        Num x = new Num(1345678L);
+        Num x = new Num(123L);
         //System.out.println(x);
 
-        Num y = x.convertBase(24);
-        System.out.println(y);
-//        Num y = new Num("9");
+        Num y = new Num(1212441234L);
+ //       Num a = new Num("1234219");
 //        Num z = Num.subtract(x, y);
 //        Num d = Num.add(x, y);
-//        Num f = Num.add(z,d);
+
         //       Num newBase = Num.add(x,y);
 //        Num divide = Num.divide(x, y);
 //        Num sqrt = Num.squareRoot(x);
 //        Num mod = Num.mod(x, y);
 //        System.out.println(z.arr[0] + "---------" + z.arr[1]);
-//        Num a = Num.power(x, 5);
+        Num pow = Num.power(x, 3);
 
     }
 }
