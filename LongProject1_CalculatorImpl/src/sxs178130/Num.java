@@ -4,31 +4,51 @@ import java.util.*;
 
 public class Num implements Comparable<Num> {
 
-    static long defaultBase = 10;  // Change as needed
+    static long defaultBase = 100000000;  // Change as needed
     long base = defaultBase;  // Change as needed
     long[] arr;  // array to store arbitrarily large integers
     boolean isNegative;  // boolean flag to represent negative numbers
     int len;  // actual number of elements of array that are used;  number is stored in arr[0..len-1]
 
-    public Num(String s) {
+//    public Num(String s) {
+//
+//        isNegative = (s.charAt(0) == '-') ? true : false;
+//        double Log_10B = Math.log10(this.base);
+//        int stringLength = (isNegative) ? s.length() - 1 : s.length();
+//        int length = (int) Math.ceil((stringLength + 1 / Log_10B) + 1);
+//        this.len = stringLength;
+//        arr = new long[length];
+//        for (int i = 0; i < stringLength; i++) {
+//            arr[i] = Character.getNumericValue(s.charAt(s.length() - 1 - i));
+//        }
 
-        isNegative = (s.charAt(0) == '-') ? true : false;
-        double Log_10B = Math.log10(this.base);
-        int stringLength = (isNegative) ? s.length() - 1 : s.length();
-        int length = (int) Math.ceil((stringLength + 1 / Log_10B) + 1);
-        this.len = stringLength;
-        arr = new long[length];
-        for (int i = 0; i < stringLength; i++) {
-            arr[i] = Character.getNumericValue(s.charAt(s.length() - 1 - i));
+
+    public Num(String s)
+        {
+            int count = 8;
+            isNegative = (s.charAt(0) == '-') ? true : false;
+            int stringLength = (isNegative) ? s.length() - 1 : s.length();
+            int size = lengthInDiffBase(stringLength,base);
+            this.arr = new long[size];
+            int index = 0;
+            for (int i = 0; i < stringLength; i=i+count) {
+            if(stringLength - i <= count) {
+                this.arr[index++] = Long.parseLong(s.substring(0,s.length() - i));
+                this.len++;
+            }
+            else {
+                this.arr[index++] = Long.parseLong(s.substring(s.length() - i - count, s.length()  - i));
+                this.len++;
+
+            }
         }
-
 
     }
 
-    private int lengthInDiffBase( int len, int base)
+    private int lengthInDiffBase( int len, long base)
     {
         double Log_10B = Math.log10(base);
-        int length = (int) Math.ceil((len + 1 / Log_10B) + 1);
+        int length = (int) Math.ceil(((len + 1) / Log_10B) + 1);
         return length;
     }
 
@@ -596,7 +616,7 @@ public class Num implements Comparable<Num> {
     }
 
     // Return number equal to "this" number, in base=newBase
-    public Num convertBase(int newBase) {
+    public Num convertBase(long newBase) {
 
         Num result = new Num(0L);
         result.base = newBase;
@@ -813,13 +833,13 @@ public class Num implements Comparable<Num> {
 
         //Num base = new Num(129L,13L);
         // System.out.println(base);
-        Num x = new Num(123L);
+        Num x = new Num("237868236432648372642384683246267234987349782235235235232347237982379472349823523685238562397579235972359");
         //System.out.println(x);
 
-        Num y = new Num(1212441234L);
+        Num y = new Num("121244123412412312431241241241241241241242352321413475734985923757923657293658273685723875682356286235");
  //       Num a = new Num("1234219");
 //        Num z = Num.subtract(x, y);
-//        Num d = Num.add(x, y);
+        Num d = Num.product(x, y);
 
         //       Num newBase = Num.add(x,y);
 //        Num divide = Num.divide(x, y);
