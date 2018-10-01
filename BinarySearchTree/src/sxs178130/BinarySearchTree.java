@@ -251,10 +251,13 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
                 for (int i = 0; i < t.size; i++) {
                     System.out.print(arr[i] + " ");
                 }
-                System.out.println();
+
+                System.out.println("Max--->>>>>"+t.max());
+                System.out.println("Min--->>>>>"+t.min());
                 return;
             }
         }
+
     }
 
 
