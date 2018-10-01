@@ -20,7 +20,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
 
     Entry<T> root;
     int size;
-    Stack<Entry<T>> stack = new Stack<Entry<T>>();
+    Stack<Entry<T>> stack;
 
     public BinarySearchTree() {
         root = null;
@@ -42,7 +42,10 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
      *  Element in tree that is equal to x is returned, null otherwise.
      */
     public T get(T x) {
-        return null;
+        Entry<T> t = find(x);
+        if (t == null || t.element.compareTo(x) != 0)
+            return null;
+        return t.element;
     }
 
     /** TO DO: Add x to tree. 
@@ -81,27 +84,24 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
         if (root == null)
             return null;
 
-
-
         Entry<T> t = find(x);
 
-        if (t.element.compareTo(x) != 0)
+        if (t == null || t.element.compareTo(x) != 0)
             return null;
 
         T result = t.element;
-        if (t.right != null || t.left != null)
+        if (t.right == null || t.left == null) {
             bypass(t);
+        }
         else {
                 stack.push(t);
                 Entry<T> successor = find(t.right,x);
                 t.element = successor.element   ;
                 bypass(successor);
-                size--;
-
-
         }
 
-        return null;
+        size--;
+        return result;
     }
 
     private void bypass(Entry<T> t) {
@@ -139,7 +139,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
         return t.element;
     }
 
-    // TODO: Create an array with the elements using in-order traversal of tree
+
     public Comparable[] toArray() {
         Comparable[] arr = new Comparable[size];
         if (root == null)
@@ -170,6 +170,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
 
     public Entry<T> find(T x) {
 
+        stack = new Stack<>();
         stack.push(null);
         return find(this.root, x);
 
@@ -179,12 +180,12 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
         if (tEntry == null || (tEntry.element.compareTo(x) == 0))
             return tEntry;
         while (true) {
-            if (tEntry.element.compareTo(x) < 0) {
+            if (tEntry.element.compareTo(x) > 0) {
                 if (tEntry.left == null)
                     break;
                 else {
                     stack.push(tEntry);
-                    tEntry = tEntry.right;
+                    tEntry = tEntry.left;
                 }
             } else if (tEntry.element.compareTo(x) == 0)
                 break;
