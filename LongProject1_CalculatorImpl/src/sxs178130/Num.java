@@ -833,20 +833,20 @@ public class Num implements Comparable<Num> {
 
         //Num base = new Num(129L,13L);
         // System.out.println(base);
-        Num x = new Num("237868236432648372642384683246267234987349782235235235232347237982379472349823523685238562397579235972359");
+        Num x = new Num("3");
         //System.out.println(x);
 
         Num y = new Num("121244123412412312431241241241241241241242352321413475734985923757923657293658273685723875682356286235");
  //       Num a = new Num("1234219");
 //        Num z = Num.subtract(x, y);
-        Num d = Num.product(x, y);
+        Num d = Num.power(x, 999999);
 
         //       Num newBase = Num.add(x,y);
 //        Num divide = Num.divide(x, y);
 //        Num sqrt = Num.squareRoot(x);
 //        Num mod = Num.mod(x, y);
 //        System.out.println(z.arr[0] + "---------" + z.arr[1]);
-        Num pow = Num.power(x, 3);
+
 
     }
 }

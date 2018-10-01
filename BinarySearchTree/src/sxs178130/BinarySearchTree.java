@@ -20,7 +20,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
 
     Entry<T> root;
     int size;
-    Deque<Entry<T>> stack = new ArrayDeque<>();
+    Stack<Entry<T>> stack = new Stack<Entry<T>>();
 
     public BinarySearchTree() {
         root = null;
@@ -142,14 +142,35 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
     // TODO: Create an array with the elements using in-order traversal of tree
     public Comparable[] toArray() {
         Comparable[] arr = new Comparable[size];
-        /* write code to place elements in array here */
+        if (root == null)
+            return arr;
+        Entry<T> t = root;
+
+        Stack<Entry<T>> stack = new Stack<>();
+        int index = 0;
+        // traverse the tree
+        while (t != null || stack.size() > 0)
+        {
+            while (t !=  null)
+            {
+                stack.push(t);
+                t = t.left;
+            }
+
+
+            t = stack.pop();
+
+            arr[index++] = t.element;
+
+            t = t.right;
+        }
         return arr;
     }
 
 
     public Entry<T> find(T x) {
 
-        stack.addFirst(null);
+        stack.push(null);
         return find(this.root, x);
 
     }
@@ -162,7 +183,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
                 if (tEntry.left == null)
                     break;
                 else {
-                    stack.addFirst(tEntry);
+                    stack.push(tEntry);
                     tEntry = tEntry.right;
                 }
             } else if (tEntry.element.compareTo(x) == 0)
@@ -171,7 +192,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
                 if (tEntry.right == null)
                     break;
                 else {
-                    stack.addFirst(tEntry);
+                    stack.push(tEntry);
                     tEntry = tEntry.right;
                 }
             }
