@@ -167,6 +167,64 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
         return arr;
     }
 
+//
+//    public Comparable[] postFixToArray() {
+//        Comparable[] arr = new Comparable[size];
+//        if(root == null)
+//            return null;
+//
+//        Entry <T> temp = root;
+//
+//        Stack<Entry<T>> stack = new Stack<>();
+//        int index = 0;
+//
+//        while(temp!=null || stack.size()>0) {
+//            while (temp != null) {
+//                stack.push(temp);
+//                temp = temp.left;
+//            }
+//
+//            temp = stack.pop();
+//            if(temp.right!=null)
+//                temp = temp.right;
+//            else {
+//                arr[index++] = temp.element;
+//                temp =stack.pop();
+//                temp = temp.right;
+//            }
+//        }
+//
+//
+//        return arr;
+//    }
+
+
+        public Comparable[] prefixToArray() {
+        Comparable[] arr = new Comparable[size];
+        if(root == null)
+            return null;
+
+        Entry <T> temp = root;
+
+        Stack<Entry<T>> stack = new Stack<>();
+        int index = 0;
+
+
+        while(temp!=null || stack.size()>0) {
+
+            while(temp!=null) {
+                arr[index++] = temp.element;
+                stack.push(temp);
+                temp= temp.left;
+            }
+
+            temp = stack.pop().right;
+        }
+
+
+
+        return arr;
+   }
 
     public Entry<T> find(T x) {
 
@@ -246,7 +304,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
                 t.remove(-x);
                 t.printTree();
             } else {
-                Comparable[] arr = t.toArray();
+                Comparable[] arr = t.prefixToArray();
                 System.out.print("Final: ");
                 for (int i = 0; i < t.size; i++) {
                     System.out.print(arr[i] + " ");
