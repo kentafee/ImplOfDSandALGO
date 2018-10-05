@@ -600,12 +600,16 @@ public class Num implements Comparable<Num> {
 
     // Return number to a string in base 10
     public String toString() {
+        int count = 8;
         StringBuilder strbase10 = new StringBuilder();
         if (isNegative) {
             strbase10.append('-');
         }
-        for (int i = len - 1; i >= 0; i--) {
-            strbase10.append(arr[i]);
+        strbase10.append(arr[len-1]);
+        for (int i = len - 2; i >= 0; i--) {
+            int length = (int) (Math.log10(arr[i]) + 1);
+            int diff = count-length+1;
+            strbase10.append(String.format("%0"+diff+"d", arr[i]));
         }
         return strbase10.toString();
     }
@@ -833,13 +837,14 @@ public class Num implements Comparable<Num> {
 
         //Num base = new Num(129L,13L);
         // System.out.println(base);
-        Num x = new Num("3");
+        Num x = new Num("100000003");
+        x.toString();
         //System.out.println(x);
 
-        Num y = new Num("121244123412412312431241241241241241241242352321413475734985923757923657293658273685723875682356286235");
+//        Num y = new Num("121244123412412312431241241241241241241242352321413475734985923757923657293658273685723875682356286235");
  //       Num a = new Num("1234219");
 //        Num z = Num.subtract(x, y);
-        Num d = Num.power(x, 999999);
+ //       Num d = Num.power(x, 999999);
 
         //       Num newBase = Num.add(x,y);
 //        Num divide = Num.divide(x, y);
