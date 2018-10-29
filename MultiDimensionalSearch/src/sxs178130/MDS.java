@@ -12,8 +12,8 @@ import java.util.*;
 public class MDS {
     // Add fields of MDS here
     private Map<Long,Item> idMap;
-    private Map<Money, TreeSet<Item>> priceMap;
-    private Map<Long, TreeSet<Item>> descMap;
+    private Map<Money, Set<Item>> priceMap;
+    private Map<Long, Set<Item>> descMap;
 
     // Constructors
     public MDS() {
@@ -50,9 +50,13 @@ public class MDS {
          Set descSet =    descMap.get(desc);
          if(descSet == null)
          {
-             descSet = new TreeSet();
+             descSet = new HashSet();
              descSet.add(item);
-             descMap.put(desc, (TreeSet<Item>) descSet);
+             descMap.put(desc,  descSet);
+         }
+         else
+         {
+             descSet.add(item);
          }
          }
 
@@ -161,9 +165,34 @@ public class MDS {
 
 }
 
-class Item{
+class Item implements Comparable<Item>{
     private MDS.Money price;
     private long id;
+
+    public MDS.Money getPrice() {
+        return price;
+    }
+
+    public void setPrice(MDS.Money price) {
+        this.price = price;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public List<Long> getDescription() {
+        return description;
+    }
+
+    public void setDescription(List<Long> description) {
+        this.description = description;
+    }
+
     private List<Long> description;
 
     public Item( long id,MDS.Money price,List<Long> description) {
@@ -171,7 +200,27 @@ class Item{
         this.id = id;
         this.description = description;
     }
+    @Override
+    public int compareTo(Item p) {
+        return 1;
+    }
 
+    @Override
+    public int hashCode(){}
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj == null || !(obj instanceof Item)) return false;
+        Item e = (Item) obj;
+        if(e.getId() == this.getId() && this.getPrice().equals(e.getPrice()))
+        {
+            for(Long x:this.getDescription())
+            {
+                
+            }
+        }
+        return false;
+    }
 
 
 }
