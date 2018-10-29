@@ -1,5 +1,7 @@
-/** Starter code for LP3
- *  @author
+/**
+ * Starter code for LP3
+ *
+ * @author
  */
 
 // Change to your net id
@@ -11,13 +13,13 @@ import java.util.*;
 
 public class MDS {
     // Add fields of MDS here
-    private Map<Long,Item> idMap;
+    private Map<Long, Item> idMap;
     private Map<Money, HashSet<Item>> priceMap;
     private Map<Long, HashSet<Item>> descMap;
 
     // Constructors
     public MDS() {
-        idMap = new TreeMap<>(  );
+        idMap = new TreeMap<>();
         priceMap = new TreeMap<>();
         descMap = new HashMap<>();
     }
@@ -31,41 +33,36 @@ public class MDS {
        Returns 1 if the item is new, and 0 otherwise.
     */
     public int insert(long id, Money price, java.util.List<Long> list) {
-        Item item = new Item(id,price,list);
- // if item is not there in inventory
-        if(idMap.put(id,item)==null) {
- // Updating price Map
+        Item item = new Item(id, price, list);
+        // if item is not there in inventory
+        if (idMap.put(id, item) == null) {
+            // Updating price Map
 
             Set itemSet = priceMap.get(price);
-            if(itemSet == null) {
+            if (itemSet == null) {
                 itemSet = new HashSet();
                 itemSet.add(item);
                 priceMap.put(price, (HashSet<Item>) itemSet);
-            }
-            else
-              itemSet.add(item);
+            } else
+                itemSet.add(item);
 // updating descMap
-         for(Long desc : list)
-         {
-         Set descSet =    descMap.get(desc);
-         if(descSet == null)
-         {
-             descSet = new HashSet();
-             descSet.add(item);
-             descMap.put(desc, (HashSet<Item>) descSet);
-         }
-         else
-         {
-             descSet.add(item);
-         }
-         }
+            for (Long desc : list) {
+                Set descSet = descMap.get(desc);
+                if (descSet == null) {
+                    descSet = new HashSet();
+                    descSet.add(item);
+                    descMap.put(desc, (HashSet<Item>) descSet);
+                } else {
+                    descSet.add(item);
+                }
+            }
 
             return 1;
         }
- // if item is already there in inventory
+        // if item is already there in inventory
         else {
             Set itemSet = priceMap.get(price);
-                itemSet.add(item);
+            itemSet.add(item);
             return 0;
         }
 
@@ -75,7 +72,9 @@ public class MDS {
     public Money find(long id) {
 
         Item item = idMap.get(id);
-        return item.getPrice();
+        if (item != null)
+            return item.getPrice();
+        return new Money();
     }
 
     /* 
@@ -84,7 +83,21 @@ public class MDS {
        or 0, if such an id did not exist.
     */
     public long delete(long id) {
-        return 0;
+        long sum = 0;
+        Item item = idMap.get(id);
+        if(item != null) {
+
+            idMap.remove(id);
+            Set set = priceMap.get(item.price);
+            set.remove(item);
+
+            for (Long desc : item.getDescription()) {
+                sum += desc;
+                set = descMap.get(desc);
+                set.remove(item);
+            }
+        }
+        return sum;
     }
 
     /* 
@@ -136,72 +149,95 @@ public class MDS {
 
     // Do not modify the Money class in a way that breaks LP3Driver.java
     public static class Money implements Comparable<Money> {
-        long d;  int c;
-        public Money() { d = 0; c = 0; }
-        public Money(long d, int c) { this.d = d; this.c = c; }
+        long d;
+        int c;
+
+        public Money() {
+            d = 0;
+            c = 0;
+        }
+
+        public Money(long d, int c) {
+            this.d = d;
+            this.c = c;
+        }
+
         public Money(String s) {
             String[] part = s.split("\\.");
             int len = part.length;
-            if(len < 1) { d = 0; c = 0; }
-            else if(part.length == 1) { d = Long.parseLong(s);  c = 0; }
-            else { d = Long.parseLong(part[0]);  c = Integer.parseInt(part[1]); }
+            if (len < 1) {
+                d = 0;
+                c = 0;
+            } else if (part.length == 1) {
+                d = Long.parseLong(s);
+                c = 0;
+            } else {
+                d = Long.parseLong(part[0]);
+                c = Integer.parseInt(part[1]);
+            }
         }
-        public long dollars() { return d; }
-        public int cents() { return c; }
+
+        public long dollars() {
+            return d;
+        }
+
+        public int cents() {
+            return c;
+        }
+
         public int compareTo(Money other) { // Complete this, if needed
-            if(this.d>other.d)
+            if (this.d > other.d)
                 return 1;
-            else if(this.d<other.d)
+            else if (this.d < other.d)
                 return -1;
-            else
-            {
-                if(this.c>other.c)
+            else {
+                if (this.c > other.c)
                     return 1;
-                else if(this.c<other.c)
+                else if (this.c < other.c)
                     return -1;
                 else return 0;
             }
         }
-        public String toString() { return d + "." + c; }
+
+        public String toString() {
+            return d + "." + c;
+        }
     }
 
-}
 
-class Item {
-    private MDS.Money price;
-    private long id;
-    private List<Long> description;
+    public static class Item {
+        private MDS.Money price;
+        private long id;
+        private List<Long> description;
 
-    public Item( long id,MDS.Money price,List<Long> description) {
-        this.price = price;
-        this.id = id;
-        this.description = new LinkedList<>();
-        for(Long desc : description)
-        {
-            this.description.add(desc);
+        public Item(long id, MDS.Money price, List<Long> description) {
+            this.price = price;
+            this.id = id;
+            this.description = new LinkedList<>();
+            for (Long desc : description) {
+                this.description.add(desc);
+            }
+
         }
 
-    }
-    public MDS.Money getPrice() {
-        return price;
-    }
+        public MDS.Money getPrice() {
+            return price;
+        }
 
-    @Override
-    public boolean equals(Object obj) {
-            if(obj == null || !(obj instanceof Item)) return false;
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null || !(obj instanceof Item)) return false;
             Item e = (Item) obj;
-            if(e.getId() == this.getId() && (this.getPrice().compareTo(e.getPrice()))==0)
-            {
+            if (e.getId() == this.getId() && (this.getPrice().compareTo(e.getPrice())) == 0) {
                 Iterator<Long> itr1 = this.description.listIterator();
                 Iterator<Long> itr2 = this.description.listIterator();
 
-                while(itr1.hasNext()&&itr2.hasNext())
-                {
-                    if(itr1.next() != itr2.next())
+                while (itr1.hasNext() && itr2.hasNext()) {
+                    if (itr1.next() != itr2.next())
                         return false;
                 }
 
-                if(itr1.hasNext()|| itr2.hasNext())
+                if (itr1.hasNext() || itr2.hasNext())
                     return false;
                 else
                     return true;
@@ -210,31 +246,35 @@ class Item {
         }
 
 
-    @Override
-    public int hashCode() {
+        @Override
+        public int hashCode() {
 
-        return Objects.hash(getPrice(), getId(), getDescription());
-    }
+            return Objects.hash(getPrice(), getId(), getDescription());
+        }
 
-    public void setPrice(MDS.Money price) {
-        this.price = price;
-    }
+        public void setPrice(MDS.Money price) {
+            this.price = price;
+        }
 
-    public long getId() {
-        return id;
-    }
+        public long getId() {
+            return id;
+        }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+        public void setId(long id) {
+            this.id = id;
+        }
 
-    public List<Long> getDescription() {
-        return description;
-    }
+        public List<Long> getDescription() {
+            return description;
+        }
 
-    public void setDescription(List<Long> description) {
-        this.description = description;
+        public void setDescription(List<Long> description) {
+            this.description = description;
+        }
+
+
     }
 
 
 }
+
