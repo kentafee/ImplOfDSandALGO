@@ -12,8 +12,8 @@ import java.util.*;
 public class MDS {
     // Add fields of MDS here
     private Map<Long,Item> idMap;
-    private Map<Money, Set<Item>> priceMap;
-    private Map<Long, Set<Item>> descMap;
+    private Map<Money, HashSet<Item>> priceMap;
+    private Map<Long, HashSet<Item>> descMap;
 
     // Constructors
     public MDS() {
@@ -38,9 +38,9 @@ public class MDS {
 
             Set itemSet = priceMap.get(price);
             if(itemSet == null) {
-                itemSet = new TreeSet();
+                itemSet = new HashSet();
                 itemSet.add(item);
-                priceMap.put(price, (TreeSet<Item>) itemSet);
+                priceMap.put(price, (HashSet<Item>) itemSet);
             }
             else
               itemSet.add(item);
@@ -52,7 +52,7 @@ public class MDS {
          {
              descSet = new HashSet();
              descSet.add(item);
-             descMap.put(desc,  descSet);
+             descMap.put(desc, (HashSet<Item>) descSet);
          }
          else
          {
@@ -73,7 +73,9 @@ public class MDS {
 
     // b. Find(id): return price of item with given id (or 0, if not found).
     public Money find(long id) {
-        return new Money();
+
+        Item item = idMap.get(id);
+        return item.getPrice();
     }
 
     /* 
@@ -165,12 +167,53 @@ public class MDS {
 
 }
 
-class Item implements Comparable<Item>{
+class Item {
     private MDS.Money price;
     private long id;
+    private List<Long> description;
 
+    public Item( long id,MDS.Money price,List<Long> description) {
+        this.price = price;
+        this.id = id;
+        this.description = new LinkedList<>();
+        for(Long desc : description)
+        {
+            this.description.add(desc);
+        }
+
+    }
     public MDS.Money getPrice() {
         return price;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+            if(obj == null || !(obj instanceof Item)) return false;
+            Item e = (Item) obj;
+            if(e.getId() == this.getId() && (this.getPrice().compareTo(e.getPrice()))==0)
+            {
+                Iterator<Long> itr1 = this.description.listIterator();
+                Iterator<Long> itr2 = this.description.listIterator();
+
+                while(itr1.hasNext()&&itr2.hasNext())
+                {
+                    if(itr1.next() != itr2.next())
+                        return false;
+                }
+
+                if(itr1.hasNext()|| itr2.hasNext())
+                    return false;
+                else
+                    return true;
+            }
+            return false;
+        }
+
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getPrice(), getId(), getDescription());
     }
 
     public void setPrice(MDS.Money price) {
@@ -191,35 +234,6 @@ class Item implements Comparable<Item>{
 
     public void setDescription(List<Long> description) {
         this.description = description;
-    }
-
-    private List<Long> description;
-
-    public Item( long id,MDS.Money price,List<Long> description) {
-        this.price = price;
-        this.id = id;
-        this.description = description;
-    }
-    @Override
-    public int compareTo(Item p) {
-        return 1;
-    }
-
-    @Override
-    public int hashCode(){}
-
-    @Override
-    public boolean equals(Object obj){
-        if(obj == null || !(obj instanceof Item)) return false;
-        Item e = (Item) obj;
-        if(e.getId() == this.getId() && this.getPrice().equals(e.getPrice()))
-        {
-            for(Long x:this.getDescription())
-            {
-                
-            }
-        }
-        return false;
     }
 
 
