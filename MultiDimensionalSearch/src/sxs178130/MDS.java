@@ -144,7 +144,32 @@ public class MDS {
       deleted from the description of id.  Return 0 if there is no such id.
     */
     public long removeNames(long id, java.util.List<Long> list) {
-        return 0;
+
+        long sum = 0;
+        Item item = idMap.get(id);
+        if(item == null)
+            return sum;
+
+        Set<Long> listSet = new HashSet<>();
+        List<Long> itemDesc = item.getDescription();
+        for(Long desc : list)
+        {
+            listSet.add(desc);
+            Set descSet = descMap.get(desc);
+            if(descSet!=null)
+                descSet.remove(item);
+        }
+
+        Iterator<Long> itr = itemDesc.listIterator();
+        while (itr.hasNext()) {
+            Long desc = itr.next();
+            if (listSet.contains(desc)) {
+                sum += desc;
+                itr.remove();
+            }
+        }
+
+        return sum;
     }
 
     // Do not modify the Money class in a way that breaks LP3Driver.java

@@ -38,7 +38,12 @@ public class SP9 {
 
     public static void insertionSort(int[] arr) {
 
-        for(int i=0; i<arr.length;i++)
+        insertionSort(arr, 0, arr.length-1);
+
+    }
+
+    public static void insertionSort(int[] arr, int p, int r) {
+        for(int i=p; i<=r;i++)
         {
             int temp = arr[i];
             int j = i-1;
@@ -50,8 +55,8 @@ public class SP9 {
             }
 
         }
-
     }
+
 
     public static void mergeSort1(int[] arr) {
         mergeSort1(arr,0,arr.length-1);
@@ -64,11 +69,11 @@ public class SP9 {
             int q = (p+r)/2;
             mergeSort1(arr,p,q);
             mergeSort1(arr,q+1,r);
-            merge(arr,p,q,r);
+            merge1(arr,p,q,r);
         }
     }
 
-    public static void merge(int[] arr , int p, int q, int r)
+    public static void merge1(int[] arr , int p, int q, int r)
     {
 
         int [] left = new int[q-p+1];
@@ -100,6 +105,25 @@ public class SP9 {
 
     }
 
+
+    public static void mergeSort2(int[] arr) {
+        int[] arr2 =  new int[arr.length];
+        mergeSort2(arr,arr2,0,arr.length-1);
+    }
+
+    public static void mergeSort2(int[] arr,int[]arr2,int p, int r) {
+        if (p - r + 1 < 17)
+            insertionSort(arr, p, r);
+        else {
+            int q = (p + r) / 2;
+            mergeSort2(arr,arr2,p,q);
+            mergeSort2(arr,arr2,q+1,r);
+            merge2(arr,arr2,p,q,r);
+        }
+    }
+
+    private static void merge2(int[] arr,int[] arr2, int p, int q, int r) {
+    }
 
     /** Timer class for roughly calculating running time of programs
      *  @author rbk
