@@ -107,7 +107,12 @@ public class MDS {
        Return 0 if there is no such item.
     */
     public Money findMinPrice(long n) {
-        return new Money();
+        Set<Item> items = descMap.get(n);
+        if(items == null){
+            return null;
+        }
+        return ((TreeSet<Item>) items).first().price;
+
     }
 
     /* 
@@ -116,7 +121,11 @@ public class MDS {
        Return 0 if there is no such item.
     */
     public Money findMaxPrice(long n) {
-        return new Money();
+        Set<Item> items = descMap.get(n);
+        if(items == null){
+            return null;
+        }
+        return ((TreeSet<Item>) items).last().price;
     }
 
     /* 
@@ -125,7 +134,21 @@ public class MDS {
        their prices fall within the given range, [low, high].
     */
     public int findPriceRange(long n, Money low, Money high) {
-        return 0;
+        int count=0;
+        Set<Item> items = descMap.get(n);
+        if(items == null){
+            return count;
+        }
+        for(Item item : items){
+            Money price = item.getPrice();
+            if(price.compareTo(high)==0 || price.compareTo(low)==0){
+                count++;
+            }
+            else if(price.compareTo(high)==-1 && price.compareTo(low)==1){
+                count++;
+            }
+        }
+        return count;
     }
 
     /* 
@@ -230,7 +253,7 @@ public class MDS {
     }
 
 
-    public static class Item {
+    public static class Item implements Comparable<Item>{
         private MDS.Money price;
         private long id;
         private List<Long> description;
@@ -247,6 +270,11 @@ public class MDS {
 
         public MDS.Money getPrice() {
             return price;
+        }
+
+        @Override
+        public int compareTo(Item item) {
+            return price.compareTo(item.price);
         }
 
         @Override
