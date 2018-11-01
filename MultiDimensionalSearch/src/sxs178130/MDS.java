@@ -15,12 +15,12 @@ public class MDS {
     // Add fields of MDS here
     private Map<Long, Item> idMap;
     private Map<Money, HashSet<Item>> priceMap;
-    private Map<Long, HashSet<Item>> descMap;
+    private Map<Long, TreeSet<Item>> descMap;
 
     // Constructors
     public MDS() {
         idMap = new TreeMap<>();
-        priceMap = new TreeMap<>();
+        priceMap = new HashMap<>();
         descMap = new HashMap<>();
     }
 
@@ -49,9 +49,9 @@ public class MDS {
             for (Long desc : list) {
                 Set descSet = descMap.get(desc);
                 if (descSet == null) {
-                    descSet = new HashSet();
+                    descSet = new TreeSet();
                     descSet.add(item);
-                    descMap.put(desc, (HashSet<Item>) descSet);
+                    descMap.put(desc, (TreeSet<Item>) descSet);
                 } else {
                     descSet.add(item);
                 }
@@ -135,10 +135,11 @@ public class MDS {
     */
     public int findPriceRange(long n, Money low, Money high) {
         int count=0;
-        Set<Item> items = descMap.get(n);
+        TreeSet<Item> items = descMap.get(n);
         if(items == null){
             return count;
         }
+
         for(Item item : items){
             Money price = item.getPrice();
             if(price.compareTo(high)==0 || price.compareTo(low)==0){
@@ -151,13 +152,27 @@ public class MDS {
         return count;
     }
 
+
     /* 
        g. PriceHike(l,h,r): increase the price of every product, whose id is
        in the range [l,h] by r%.  Discard any fractional pennies in the new
        prices of items.  Returns the sum of the net increases of the prices.
     */
     public Money priceHike(long l, long h, double rate) {
-        return new Money();
+        double netIncrease = 0;
+        NavigableMap<Long, Item> subsetIdMap = ((TreeMap)idMap).subMap(l, true, h, true);
+        for(Item item: subsetIdMap.values()) {
+            Money temp = item.getPrice();
+            double price = Double.parseDouble(temp.toString());
+            netIncrease+=price*(rate/100);
+            price = price + price*(rate/100);
+            int decPart = (int)((price-(long) price)*100);
+            long dolPart = (long) price;
+            temp.setCents(decPart);
+            temp.setDollars(dolPart);
+        }
+        String stringSum = String.valueOf(netIncrease);
+        return new Money(stringSum);
     }
 
     /*
@@ -223,6 +238,13 @@ public class MDS {
                 d = Long.parseLong(part[0]);
                 c = Integer.parseInt(part[1]);
             }
+        }
+        public void setDollars(long d) {
+            this.d = d;
+        }
+
+        public void setCents(int c) {
+            this.c = c;
         }
 
         public long dollars() {
