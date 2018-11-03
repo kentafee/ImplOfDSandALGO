@@ -25,49 +25,79 @@ public class MDS {
     }
 
     /* Public methods of MDS. Do not change their signatures.
-       __________________________________________________________________
+       ______________________
        a. Insert(id,price,list): insert a new item whose description is given
        in the list.  If an entry with the same id already exists, then its
        description and price are replaced by the new values, unless list
-       is null or empty, in which case, just the price is updated. 
+       is null or empty, in which case, just the price is updated.
        Returns 1 if the item is new, and 0 otherwise.
     */
     public int insert(long id, Money price, java.util.List<Long> list) {
-        Item item = new Item(id, price, list);
-        // if item is not there in inventory
-        if (idMap.put(id, item) == null) {
-            // Updating price Map
+        Item oldItem = idMap.get(id);
+        Item item;
+        if(list.size()==0)
+            item = new Item(id, price, oldItem.getDescription());
+        else
+            item = new Item(id, price, list);
 
-            Set itemSet = priceMap.get(price);
-            if (itemSet == null) {
-                itemSet = new HashSet();
-                itemSet.add(item);
-                priceMap.put(price, (HashSet<Item>) itemSet);
-            } else
-                itemSet.add(item);
-// updating descMap
-            for (Long desc : list) {
-                Set descSet = descMap.get(desc);
-                if (descSet == null) {
-                    descSet = new TreeSet();
-                    descSet.add(item);
-                    descMap.put(desc, (TreeSet<Item>) descSet);
-                } else {
-                    descSet.add(item);
-                }
-            }
+        // if item is not there in inventory
+
+        if (oldItem == null) {
+            idMap.put(id, item);
+            updatePriceMap(item);
+            updateDescriptionMap(item);
 
             return 1;
         }
         // if item is already there in inventory
         else {
-            Set itemSet = priceMap.get(price);
-            itemSet.add(item);
+
+            idMap.put(id,item);
+            Money oldItemPrice = oldItem.getPrice();
+            Set itemSetOld = priceMap.get(oldItemPrice);
+            itemSetOld.remove(oldItem);
+            updatePriceMap(item);
+
+            for (Long oldDesc : oldItem.getDescription()) {
+                Set itemSetDescOld = descMap.get(oldDesc);
+                itemSetDescOld.remove(oldItem);
+            }
+
+
+            updateDescriptionMap(item);
+
+
             return 0;
         }
 
     }
 
+    private void updatePriceMap(Item item)
+    {
+        Set itemSet = this.priceMap.get(item.getPrice());
+        if (itemSet == null) {
+            itemSet = new HashSet();
+            itemSet.add(item);
+            this.priceMap.put(item.getPrice(), (HashSet<Item>) itemSet);
+        }
+        else
+            itemSet.add(item);
+    }
+
+    private void updateDescriptionMap(Item item)
+    {
+        for (Long desc : item.getDescription()) {
+            Set descSet = this.descMap.get(desc);
+            if (descSet == null) {
+                descSet = new TreeSet();
+                descSet.add(item);
+                this.descMap.put(desc, (TreeSet<Item>) descSet);
+            } else {
+                descSet.add(item);
+            }
+
+        }
+    }
     // b. Find(id): return price of item with given id (or 0, if not found).
     public Money find(long id) {
 
@@ -77,7 +107,7 @@ public class MDS {
         return new Money();
     }
 
-    /* 
+    /*
        c. Delete(id): delete item from storage.  Returns the sum of the
        long ints that are in the description of the item deleted,
        or 0, if such an id did not exist.
@@ -100,7 +130,7 @@ public class MDS {
         return sum;
     }
 
-    /* 
+    /*
        d. FindMinPrice(n): given a long int, find items whose description
        contains that number (exact match with one of the long ints in the
        item's description), and return lowest price of those items.
@@ -108,27 +138,28 @@ public class MDS {
     */
     public Money findMinPrice(long n) {
         Set<Item> items = descMap.get(n);
-        if(items == null){
-            return null;
+
+        if(items==null||items.size()==0){
+            return new Money();
         }
-        return ((TreeSet<Item>) items).first().price;
+        else return ((TreeSet<Item>) items).first().price;
 
     }
 
-    /* 
+    /*
        e. FindMaxPrice(n): given a long int, find items whose description
        contains that number, and return highest price of those items.
        Return 0 if there is no such item.
     */
     public Money findMaxPrice(long n) {
         Set<Item> items = descMap.get(n);
-        if(items == null){
-            return null;
+        if(items==null||items.size()==0){
+            return new Money();
         }
-        return ((TreeSet<Item>) items).last().price;
+        else return ((TreeSet<Item>) items).last().price;
     }
 
-    /* 
+    /*
        f. FindPriceRange(n,low,high): given a long int n, find the number
        of items whose description contains n, and in addition,
        their prices fall within the given range, [low, high].
@@ -153,7 +184,7 @@ public class MDS {
     }
 
 
-    /* 
+    /*
        g. PriceHike(l,h,r): increase the price of every product, whose id is
        in the range [l,h] by r%.  Discard any fractional pennies in the new
        prices of items.  Returns the sum of the net increases of the prices.
@@ -164,15 +195,18 @@ public class MDS {
         for(Item item: subsetIdMap.values()) {
             Money temp = item.getPrice();
             double price = Double.parseDouble(temp.toString());
-            netIncrease+=price*(rate/100);
+            double increase = price*rate;
+            netIncrease+=increase/100;
             price = price + price*(rate/100);
             int decPart = (int)((price-(long) price)*100);
             long dolPart = (long) price;
             temp.setCents(decPart);
             temp.setDollars(dolPart);
         }
-        String stringSum = String.valueOf(netIncrease);
-        return new Money(stringSum);
+        int decPartNet = (int)((netIncrease-(long) netIncrease)*100);
+        long dolPartNet = (long) netIncrease;
+//        String stringSum = String.valueOf(netIncrease);
+        return new Money(dolPartNet+"."+decPartNet);
     }
 
     /*
@@ -270,7 +304,10 @@ public class MDS {
         }
 
         public String toString() {
-            return d + "." + c;
+            if(c<10)
+                return d + ".0" + c;
+            else return d + "." + c;
+
         }
     }
 
@@ -352,4 +389,3 @@ public class MDS {
 
 
 }
-
