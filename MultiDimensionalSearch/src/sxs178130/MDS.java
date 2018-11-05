@@ -19,13 +19,11 @@ import java.util.stream.Collectors;
 public class MDS {
     // Add fields of MDS here
     private Map<Long, Item> idMap;
-    private Map<Money, TreeSet<Item>> priceMap;
     private Map<Long, TreeSet<Item>> descMap;
 
     // Constructors
     public MDS() {
         idMap = new TreeMap<>();
-        priceMap = new HashMap<>();
         descMap = new HashMap<>();
     }
 
@@ -49,7 +47,6 @@ public class MDS {
 
         if (oldItem == null) {
             idMap.put(id, item);
-            updatePriceMap(item);
             updateDescriptionMap(item);
 
             return 1;
@@ -58,10 +55,7 @@ public class MDS {
         else {
 
             idMap.put(id,item);
-            Money oldItemPrice = oldItem.getPrice();
-            Set itemSetOld = priceMap.get(oldItemPrice);
-            itemSetOld.remove(oldItem);
-            updatePriceMap(item);
+
 
             for (Long oldDesc : oldItem.getDescription()) {
                 Set itemSetDescOld = descMap.get(oldDesc);
@@ -77,17 +71,7 @@ public class MDS {
 
     }
 
-    private void updatePriceMap(Item item)
-    {
-        Set itemSet = this.priceMap.get(item.getPrice());
-        if (itemSet == null) {
-            itemSet = new TreeSet();
-            itemSet.add(item);
-            this.priceMap.put(item.getPrice(), (TreeSet<Item>) itemSet);
-        }
-        else
-            itemSet.add(item);
-    }
+
 
     private void updateDescriptionMap(Item item)
     {
@@ -129,12 +113,11 @@ public class MDS {
         if(item != null) {
 
             idMap.remove(id);
-            Set set = priceMap.get(item.price);
-            set.remove(item);
+
 
             for (Long desc : item.getDescription()) {
                 sum += desc;
-                set = descMap.get(desc);
+                Set set = descMap.get(desc);
                 set.remove(item);
             }
         }
@@ -206,19 +189,17 @@ public class MDS {
             NavigableMap<Long, Item> subsetIdMap = ((TreeMap) idMap).subMap(l, true, h, true);
             for (Item item : subsetIdMap.values()) {
                 Money temp = item.getPrice();
-                Set itemSet = priceMap.get(temp);
-                if(itemSet!=null || itemSet.size()!=0) {
-                    if(itemSet.contains(item))
-                        itemSet.remove(item);
-                }
                 BigDecimal oldPrice = new BigDecimal(temp.toString());
                 BigDecimal rateObj = new BigDecimal("" + rate);
-                BigDecimal hike = new BigDecimal(truncateFractionalPennies(oldPrice.multiply(rateObj.divide(new BigDecimal(100)))));
+//                BigDecimal hike = new BigDecimal(truncateFractionalPennies(oldPrice.multiply(rateObj.divide(new BigDecimal(100)))));
+                BigDecimal div = new BigDecimal(truncateFractionalPennies(rateObj.divide(new BigDecimal(100))));
+                BigDecimal hike = new BigDecimal(truncateFractionalPennies(oldPrice.multiply(div)));
+
                 Money newPrice = parseMoney(truncateFractionalPennies(oldPrice.add(hike)));
                 sum = sum.add(hike);
                 temp.setDollars(newPrice.d);
                 temp.setCents(newPrice.c);
-                updatePriceMap(item);
+
 
             }
             return parseMoney(truncateFractionalPennies(sum));
