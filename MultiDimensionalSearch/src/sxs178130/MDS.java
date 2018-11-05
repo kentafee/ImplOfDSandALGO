@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 
 public class MDS {
@@ -71,7 +71,7 @@ public class MDS {
 
     }
 
-
+// update the description hash map corresponding to each description
 
     private void updateDescriptionMap(Item item)
     {
@@ -186,39 +186,37 @@ public class MDS {
 
     public Money priceHike(long l, long h, double rate) {
         if(l<=h) {
-            BigDecimal sum = new BigDecimal("0");
+            BigDecimal netIncrease = new BigDecimal("0");
             NavigableMap<Long, Item> subsetIdMap = ((TreeMap) idMap).subMap(l, true, h, true);
             for (Item item : subsetIdMap.values()) {
                 Money temp = item.getPrice();
-                BigDecimal oldPrice = new BigDecimal(temp.toString());
-                BigDecimal rateObj = new BigDecimal("" + rate);
-                BigDecimal div = new BigDecimal(truncateFractionalPennies(rateObj.divide(new BigDecimal(100))));
-                BigDecimal hike = new BigDecimal(truncateFractionalPennies(oldPrice.multiply(div)));
-
-                Money newPrice = parseMoney(truncateFractionalPennies(oldPrice.add(hike)));
-                sum = sum.add(hike);
-                temp.setDollars(newPrice.d);
-                temp.setCents(newPrice.c);
-
-
+                BigDecimal pre = new BigDecimal(temp.toString());
+                String rateStr = String.valueOf(rate);
+                BigDecimal rateBD = new BigDecimal(rateStr);
+                BigDecimal perc = new BigDecimal(truncate(rateBD.divide(new BigDecimal(100))));
+                BigDecimal increase = new BigDecimal(truncate(pre.multiply(perc)));
+                Money post = separate(truncate(pre.add(increase)));
+                netIncrease = netIncrease.add(increase);
+                temp.setDollars(post.d);
+                temp.setCents(post.c);
             }
-            return parseMoney(truncateFractionalPennies(sum));
+            return separate(truncate(netIncrease));
         }
         return new Money();
     }
 
 
-
-    private String truncateFractionalPennies(BigDecimal d){
-        DecimalFormat decimalFormat = new DecimalFormat("#0.00");
-        decimalFormat.setRoundingMode(RoundingMode.DOWN);
-        return decimalFormat.format(d);
+// truncate the number after two decimal digits
+    private String truncate(BigDecimal bd){
+        DecimalFormat df = new DecimalFormat("#0.00");
+        df.setRoundingMode(RoundingMode.DOWN);
+        return df.format(bd);
 
     }
 
-    private Money parseMoney(String s){
-        String[] arr = s.split("\\.");
-        return new Money(Long.parseLong(arr[0]), Integer.parseInt(arr[1]));
+    private Money separate(String s){
+        String[] dc = s.split("\\.");
+        return new Money(Long.parseLong(dc[0]), Integer.parseInt(dc[1]));
     }
 
 
@@ -272,21 +270,7 @@ public class MDS {
             this.c = c;
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Money)) return false;
-            Money money = (Money) o;
-            return d == money.d &&
-                    c == money.c;
-        }
-
-        @Override
-        public int hashCode() {
-
-            return Objects.hash(d, c);
-        }
-
+        
         public Money(String s) {
             String[] part = s.split("\\.");
             int len = part.length;
