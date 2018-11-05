@@ -9,12 +9,17 @@ package sxs178130;
 
 // If you want to create additional classes, place them in this file as subclasses of MDS
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+
 
 public class MDS {
     // Add fields of MDS here
     private Map<Long, Item> idMap;
-    private Map<Money, HashSet<Item>> priceMap;
+    private Map<Money, TreeSet<Item>> priceMap;
     private Map<Long, TreeSet<Item>> descMap;
 
     // Constructors
@@ -76,9 +81,9 @@ public class MDS {
     {
         Set itemSet = this.priceMap.get(item.getPrice());
         if (itemSet == null) {
-            itemSet = new HashSet();
+            itemSet = new TreeSet();
             itemSet.add(item);
-            this.priceMap.put(item.getPrice(), (HashSet<Item>) itemSet);
+            this.priceMap.put(item.getPrice(), (TreeSet<Item>) itemSet);
         }
         else
             itemSet.add(item);
@@ -98,6 +103,12 @@ public class MDS {
 
         }
     }
+
+
+
+
+
+
     // b. Find(id): return price of item with given id (or 0, if not found).
     public Money find(long id) {
 
@@ -190,24 +201,62 @@ public class MDS {
        prices of items.  Returns the sum of the net increases of the prices.
     */
     public Money priceHike(long l, long h, double rate) {
-        double netIncrease = 0;
-        NavigableMap<Long, Item> subsetIdMap = ((TreeMap)idMap).subMap(l, true, h, true);
-        for(Item item: subsetIdMap.values()) {
-            Money temp = item.getPrice();
-            double price = Double.parseDouble(temp.toString());
-            double increase = price*rate;
-            netIncrease+=increase/100;
-            price = price + price*(rate/100);
-            int decPart = (int)((price-(long) price)*100);
-            long dolPart = (long) price;
-            temp.setCents(decPart);
-            temp.setDollars(dolPart);
+        if(l<=h) {
+            BigDecimal sum = new BigDecimal("0");
+            NavigableMap<Long, Item> subsetIdMap = ((TreeMap) idMap).subMap(l, true, h, true);
+            for (Item item : subsetIdMap.values()) {
+                Money temp = item.getPrice();
+                Set itemSet = priceMap.get(temp);
+                if(itemSet!=null || itemSet.size()!=0) {
+                    if(itemSet.contains(item))
+                        itemSet.remove(item);
+                }
+                BigDecimal oldPrice = new BigDecimal(temp.toString());
+                BigDecimal rateObj = new BigDecimal("" + rate);
+                BigDecimal hike = new BigDecimal(truncateFractionalPennies(oldPrice.multiply(rateObj.divide(new BigDecimal(100)))));
+                Money newPrice = parseMoney(truncateFractionalPennies(oldPrice.add(hike)));
+                sum = sum.add(hike);
+                temp.setDollars(newPrice.d);
+                temp.setCents(newPrice.c);
+                updatePriceMap(item);
+
+            }
+            return parseMoney(truncateFractionalPennies(sum));
         }
-        int decPartNet = (int)((netIncrease-(long) netIncrease)*100);
-        long dolPartNet = (long) netIncrease;
-//        String stringSum = String.valueOf(netIncrease);
-        return new Money(dolPartNet+"."+decPartNet);
+        return new Money();
     }
+
+//    public Money priceHike(long l, long h, double rate) {
+//        if(l<=h){
+//            BigDecimal sum = new BigDecimal("0");
+//            Set<Long> keys = ((TreeMap<Long, Item>)idMap).subMap(l, true, h, true).keySet().stream().map(Long::new).collect(Collectors.toSet());
+//
+//            for(Long key: keys){
+//                Item item = idMap.get(key);
+//                BigDecimal oldPrice = new BigDecimal(item.getPrice().toString());
+//                BigDecimal rateObj = new BigDecimal(""+rate);
+//                BigDecimal hike = new BigDecimal(truncateFractionalPennies(oldPrice.multiply(rateObj.divide(new BigDecimal(100)))));
+//                Money newPrice = parseMoney(truncateFractionalPennies(oldPrice.add(hike)));
+//                sum = sum.add(hike);
+//                item.setPrice(newPrice);
+//            }
+//            return parseMoney(truncateFractionalPennies(sum));
+//        }
+//        return new Money();
+//    }
+
+    private String truncateFractionalPennies(BigDecimal d){
+        DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+        decimalFormat.setRoundingMode(RoundingMode.DOWN);
+        return decimalFormat.format(d);
+
+    }
+
+    private Money parseMoney(String s){
+        String[] arr = s.split("\\.");
+        return new Money(Long.parseLong(arr[0]), Integer.parseInt(arr[1]));
+    }
+
 
     /*
       h. RemoveNames(id, list): Remove elements of list from the description of id.
@@ -259,6 +308,21 @@ public class MDS {
             this.c = c;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Money)) return false;
+            Money money = (Money) o;
+            return d == money.d &&
+                    c == money.c;
+        }
+
+        @Override
+        public int hashCode() {
+
+            return Objects.hash(d, c);
+        }
+
         public Money(String s) {
             String[] part = s.split("\\.");
             int len = part.length;
@@ -267,6 +331,7 @@ public class MDS {
                 c = 0;
             } else if (part.length == 1) {
                 d = Long.parseLong(s);
+
                 c = 0;
             } else {
                 d = Long.parseLong(part[0]);
@@ -299,14 +364,13 @@ public class MDS {
                     return 1;
                 else if (this.c < other.c)
                     return -1;
-                else return 0;
+                else
+                    return 0;
             }
         }
 
         public String toString() {
-            if(c<10)
-                return d + ".0" + c;
-            else return d + "." + c;
+           return d + "." + c;
 
         }
     }
@@ -340,20 +404,8 @@ public class MDS {
         public boolean equals(Object obj) {
             if (obj == null || !(obj instanceof Item)) return false;
             Item e = (Item) obj;
-            if (e.getId() == this.getId() && (this.getPrice().compareTo(e.getPrice())) == 0) {
-                Iterator<Long> itr1 = this.description.listIterator();
-                Iterator<Long> itr2 = this.description.listIterator();
-
-                while (itr1.hasNext() && itr2.hasNext()) {
-                    if (itr1.next() != itr2.next())
-                        return false;
-                }
-
-                if (itr1.hasNext() || itr2.hasNext())
-                    return false;
-                else
-                    return true;
-            }
+            if (e.getId() == this.getId())
+                return true;
             return false;
         }
 
