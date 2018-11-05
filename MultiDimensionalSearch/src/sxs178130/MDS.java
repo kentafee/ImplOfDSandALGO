@@ -183,6 +183,7 @@ public class MDS {
        in the range [l,h] by r%.  Discard any fractional pennies in the new
        prices of items.  Returns the sum of the net increases of the prices.
     */
+
     public Money priceHike(long l, long h, double rate) {
         if(l<=h) {
             BigDecimal sum = new BigDecimal("0");
@@ -191,7 +192,6 @@ public class MDS {
                 Money temp = item.getPrice();
                 BigDecimal oldPrice = new BigDecimal(temp.toString());
                 BigDecimal rateObj = new BigDecimal("" + rate);
-//                BigDecimal hike = new BigDecimal(truncateFractionalPennies(oldPrice.multiply(rateObj.divide(new BigDecimal(100)))));
                 BigDecimal div = new BigDecimal(truncateFractionalPennies(rateObj.divide(new BigDecimal(100))));
                 BigDecimal hike = new BigDecimal(truncateFractionalPennies(oldPrice.multiply(div)));
 
@@ -207,24 +207,7 @@ public class MDS {
         return new Money();
     }
 
-//    public Money priceHike(long l, long h, double rate) {
-//        if(l<=h){
-//            BigDecimal sum = new BigDecimal("0");
-//            Set<Long> keys = ((TreeMap<Long, Item>)idMap).subMap(l, true, h, true).keySet().stream().map(Long::new).collect(Collectors.toSet());
-//
-//            for(Long key: keys){
-//                Item item = idMap.get(key);
-//                BigDecimal oldPrice = new BigDecimal(item.getPrice().toString());
-//                BigDecimal rateObj = new BigDecimal(""+rate);
-//                BigDecimal hike = new BigDecimal(truncateFractionalPennies(oldPrice.multiply(rateObj.divide(new BigDecimal(100)))));
-//                Money newPrice = parseMoney(truncateFractionalPennies(oldPrice.add(hike)));
-//                sum = sum.add(hike);
-//                item.setPrice(newPrice);
-//            }
-//            return parseMoney(truncateFractionalPennies(sum));
-//        }
-//        return new Money();
-//    }
+
 
     private String truncateFractionalPennies(BigDecimal d){
         DecimalFormat decimalFormat = new DecimalFormat("#0.00");
