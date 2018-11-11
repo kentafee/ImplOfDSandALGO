@@ -52,6 +52,7 @@ public class MDS {
         // if item is already there in inventory
         else {
 
+
             idMap.put(id,item);
 
 
@@ -178,6 +179,10 @@ public class MDS {
     */
     public int findPriceRange(long n, Money low, Money high) {
         int count=0;
+        if(high.compareTo(low) == -1){
+            return 0;
+        }
+
         TreeSet<Item> items = descMap.get(n);
         if(items == null||items.size()==0){
             return count;
@@ -227,21 +232,6 @@ public class MDS {
     private Money toMoney(long cents){
         return new Money(cents/100, (int) cents % 100);
     }
-
-    private double truncate(double bd){
-        DecimalFormat df = new DecimalFormat("#0.00");
-        df.setRoundingMode(RoundingMode.DOWN);
-        return Double.parseDouble(df.format(bd));
-    }
-
-    private Money separate(String s){
-        System.out.println(s);
-        String[] dc = s.split("\\.");
-//        System.out.println("-- Separating --");
-//        System.out.println(Long.parseLong(dc[0]) + " " +Integer.parseInt(dc[1]));
-        return new Money(Long.parseLong(dc[0]), Integer.parseInt(dc[1]));
-    }
-
 
     /*
       h. RemoveNames(id, list): Remove elements of list from the description of id.
