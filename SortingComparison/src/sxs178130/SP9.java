@@ -9,26 +9,45 @@ public class SP9 {
     public static Random random = new Random();
     public static int numTrials = 100;
     public static void main(String[] args) {
-        int n = 10;  int choice = 1 + random.nextInt(4);
+        int n = 64000000;
+        int choice = 1 + random.nextInt(4);
         if(args.length > 0) { n = Integer.parseInt(args[0]); }
         if(args.length > 1) { choice = Integer.parseInt(args[1]); }
         int[] arr = new int[n];
         for(int i=0; i<n; i++) {
             arr[i] = i;
         }
+
+
+        choice = 4;
         Timer timer = new Timer();
         switch(choice) {
             case 1:
                 Shuffle.shuffle(arr);
-                numTrials = 1;
-                insertionSort(arr);
+                for(int i=0; i<numTrials; i++) {
+                    insertionSort(arr);
+                }
                 break;
             case 2:
                 for(int i=0; i<numTrials; i++) {
                     Shuffle.shuffle(arr);
                     mergeSort1(arr);
                 }
-                break;  // etc
+                break;
+            case 3:
+                for(int i=0; i<numTrials; i++) {
+                    Shuffle.shuffle(arr);
+                    mergeSort2(arr);
+                }
+                break;
+
+            case 4:
+                for(int i=0; i<numTrials; i++) {
+                    Shuffle.shuffle(arr);
+                    mergeSort3(arr);
+                }
+                break;
+            // etc
         }
         timer.end();
         timer.scale(numTrials);
@@ -43,17 +62,14 @@ public class SP9 {
     }
 
     public static void insertionSort(int[] arr, int p, int r) {
-        for(int i=p; i<=r;i++)
-        {
+        for (int i = p+1; i <=r ; i++) {
             int temp = arr[i];
-            int j = i-1;
-            while(j>=0 && temp<arr[j])
-            {
-                arr[j+1]=arr[j];
-                arr[j] = temp;
+            int j  = i-1;
+            while(j>=p && temp < arr[j]){
+                arr[j+1] = arr[j];
                 j--;
             }
-
+            arr[j+1] = temp;
         }
     }
 
@@ -107,22 +123,85 @@ public class SP9 {
 
 
     public static void mergeSort2(int[] arr) {
-        int[] arr2 =  new int[arr.length];
-        mergeSort2(arr,arr2,0,arr.length-1);
+        int[] arrB =  new int[arr.length];
+        mergeSort2(arr,arrB,0,arr.length-1);
     }
 
-    public static void mergeSort2(int[] arr,int[]arr2,int p, int r) {
-        if (p - r + 1 < 17)
+    public static void mergeSort2(int[] arr,int[]arrB,int p, int r) {
+        if ((r-p+1) < 17)
             insertionSort(arr, p, r);
         else {
-            int q = (p + r) / 2;
-            mergeSort2(arr,arr2,p,q);
-            mergeSort2(arr,arr2,q+1,r);
-            merge2(arr,arr2,p,q,r);
+            int q = (r+p)/ 2;
+            mergeSort2(arr,arrB,p,q);
+            mergeSort2(arr,arrB,q+1,r);
+            merge2(arr,arrB,p,q,r);
         }
     }
 
-    private static void merge2(int[] arr,int[] arr2, int p, int q, int r) {
+    private static void merge2(int[] arr,int[] arrB, int p, int q, int r) {
+        System.arraycopy(arr,p,arrB,p,r-p+1);
+        int i =p;
+        int j=q+1;
+        for(int k=p; k<=r; k++){
+            if((j>r) || (i<=q && arrB[i]<=arrB[j] )){
+
+                arr[k] = arrB[i++];
+
+            }
+
+            else{
+                arr[k] = arrB[j++];
+            }
+        }
+
+    }
+
+
+    public static void mergeSort3(int[] arr){
+        int[] arrB = new int[arr.length];
+        System.arraycopy(arr,0,arrB,0,arr.length-1);
+        mergeSort3(arr,arrB,0,arr.length-1);
+    }
+
+    public static void mergeSort3(int[]arr, int[]arrB, int p, int r){
+
+        if((r-p+1)<17){
+            insertionSort(arr,p,r);
+        }
+        else {
+            int q= (p+r)/2;
+            mergeSort3(arrB,arr,p,q);
+            mergeSort3(arrB, arr, q+1,r);
+            merge3(arr,arrB,p,q,r);
+        }
+
+    }
+
+    public static void merge3(int[]arr, int[]arrB, int p, int q , int r){
+
+        int i = p;
+        int j = q+1;
+        int k = p;
+
+        while((i<=q) && (j<=r)){
+
+            if(arrB[i]<=arrB[j]){
+                arr[k++] = arrB[i++];
+            }
+            else{
+                arr[k++] = arrB[j++];
+            }
+
+        }
+
+        while(i<=q){
+            arr[k++] = arrB[i++];
+
+        }
+
+        while(j<=r){
+            arr[k++] = arrB[j++];
+        }
     }
 
     /** Timer class for roughly calculating running time of programs

@@ -1,0 +1,14 @@
+                        8M      16M      32M       64M
+
+Insertion Sort       INF        INF     INF        INF
+
+
+MergeSort Take 1      2875ms     5609ms  10803ms   21803ms
+
+
+
+MergeSort Take 2       2323ms   4452ms   8764ms     17607ms
+
+
+
+MergeSort Take 3       2164ms    4119ms   8315ms     17033ms
