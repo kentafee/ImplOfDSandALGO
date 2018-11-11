@@ -25,3 +25,6 @@ MultiDimensionalSearch/out
 SortingComparison/*.iml
 SortingComparison/*.idea
 SortingComparison/out
+StronglyConnectedComponents/*.iml
+StronglyConnectedComponents/*.idea
+StronglyConnectedComponents/out
