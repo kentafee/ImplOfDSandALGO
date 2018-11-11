@@ -9,11 +9,9 @@ package sxs178130;
 
 // If you want to create additional classes, place them in this file as subclasses of MDS
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.*;
-
 
 
 public class MDS {
@@ -28,7 +26,7 @@ public class MDS {
     }
 
     /* Public methods of MDS. Do not change their signatures.
-       ______________________
+       ________
        a. Insert(id,price,list): insert a new item whose description is given
        in the list.  If an entry with the same id already exists, then its
        description and price are replaced by the new values, unless list
@@ -71,7 +69,7 @@ public class MDS {
 
     }
 
-// update the description hash map corresponding to each description
+
 
     private void updateDescriptionMap(Item item)
     {
@@ -87,9 +85,6 @@ public class MDS {
 
         }
     }
-
-
-
 
 
 
@@ -136,7 +131,18 @@ public class MDS {
         if(items==null||items.size()==0){
             return new Money();
         }
-        else return ((TreeSet<Item>) items).first().price;
+        else {
+
+            Iterator<Item> itr=items.iterator();
+            Money min = itr.next().getPrice();
+            while(itr.hasNext()){
+                Item c=itr.next();
+                if(min.compareTo(c.getPrice())>0)
+                    min = c.getPrice();
+                //Code to add a new element to the TreeSet ts
+            }
+            return min;
+        }
 
     }
 
@@ -150,7 +156,19 @@ public class MDS {
         if(items==null||items.size()==0){
             return new Money();
         }
-        else return ((TreeSet<Item>) items).last().price;
+        else
+        {
+
+            Iterator<Item> itr=items.iterator();
+            Money max = itr.next().getPrice();
+            while(itr.hasNext()){
+                Item c=itr.next();
+                if(max.compareTo(c.getPrice())<0)
+                    max = c.getPrice();
+                //Code to add a new element to the TreeSet ts
+            }
+            return max;
+        }
     }
 
     /*
@@ -161,9 +179,11 @@ public class MDS {
     public int findPriceRange(long n, Money low, Money high) {
         int count=0;
         TreeSet<Item> items = descMap.get(n);
-        if(items == null){
+        if(items == null||items.size()==0){
             return count;
         }
+
+
 
         for(Item item : items){
             Money price = item.getPrice();
@@ -186,36 +206,39 @@ public class MDS {
 
     public Money priceHike(long l, long h, double rate) {
         if(l<=h) {
-            BigDecimal netIncrease = new BigDecimal("0");
+            long preSum = 0;
+            long postSum =0;
+            long netIncrease = 0;
             NavigableMap<Long, Item> subsetIdMap = ((TreeMap) idMap).subMap(l, true, h, true);
             for (Item item : subsetIdMap.values()) {
-                Money temp = item.getPrice();
-                BigDecimal pre = new BigDecimal(temp.toString());
-                String rateStr = String.valueOf(rate);
-                BigDecimal rateBD = new BigDecimal(rateStr);
-                BigDecimal perc = new BigDecimal(truncate(rateBD.divide(new BigDecimal(100))));
-                BigDecimal increase = new BigDecimal(truncate(pre.multiply(perc)));
-                Money post = separate(truncate(pre.add(increase)));
-                netIncrease = netIncrease.add(increase);
-                temp.setDollars(post.d);
-                temp.setCents(post.c);
+                preSum = item.getPrice().cents() + item.getPrice().dollars() * 100;
+                postSum = preSum + (long) Math.floor(rate * preSum)/100;
+                Money newPrice = toMoney(postSum);
+                item.setPrice(newPrice);
+                netIncrease+=(postSum-preSum);
             }
-            return separate(truncate(netIncrease));
+//            netIncrease = truncate(netIncrease);
+//            return separate(Double.toString(netIncrease));
+            return toMoney(netIncrease);
         }
         return new Money();
     }
 
+    private Money toMoney(long cents){
+        return new Money(cents/100, (int) cents % 100);
+    }
 
-// truncate the number after two decimal digits
-    private String truncate(BigDecimal bd){
+    private double truncate(double bd){
         DecimalFormat df = new DecimalFormat("#0.00");
         df.setRoundingMode(RoundingMode.DOWN);
-        return df.format(bd);
-
+        return Double.parseDouble(df.format(bd));
     }
 
     private Money separate(String s){
+        System.out.println(s);
         String[] dc = s.split("\\.");
+//        System.out.println("-- Separating --");
+//        System.out.println(Long.parseLong(dc[0]) + " " +Integer.parseInt(dc[1]));
         return new Money(Long.parseLong(dc[0]), Integer.parseInt(dc[1]));
     }
 
@@ -270,7 +293,21 @@ public class MDS {
             this.c = c;
         }
 
-        
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Money)) return false;
+            Money money = (Money) o;
+            return d == money.d &&
+                    c == money.c;
+        }
+
+        @Override
+        public int hashCode() {
+
+            return Objects.hash(d, c);
+        }
+
         public Money(String s) {
             String[] part = s.split("\\.");
             int len = part.length;
@@ -283,8 +320,14 @@ public class MDS {
                 c = 0;
             } else {
                 d = Long.parseLong(part[0]);
-                c = Integer.parseInt(part[1]);
-            }
+
+
+                        c = Integer.parseInt(part[1]);
+
+
+                }
+
+
         }
         public void setDollars(long d) {
             this.d = d;
@@ -318,7 +361,7 @@ public class MDS {
         }
 
         public String toString() {
-           return d + "." + c;
+            return d + "." + c;
 
         }
     }
@@ -345,7 +388,7 @@ public class MDS {
 
         @Override
         public int compareTo(Item item) {
-            return price.compareTo(item.price);
+            return ((Long)this.id).compareTo(item.getId());
         }
 
         @Override
