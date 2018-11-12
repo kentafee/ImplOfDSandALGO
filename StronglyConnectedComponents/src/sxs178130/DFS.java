@@ -161,7 +161,7 @@ public class DFS extends GraphAlgorithm<DFS.DFSVertex> {
     }
 
     public static void main(String[] args) throws Exception {
-        String string = "7 8   1 2 2   1 3 3   2 4 5   3 4 4   4 5 1   5 1 7   6 7 1   7 6 1 0";
+        String string = "11 17   10 6 2   3 10 3   6 3 5   11 6 4   11 3 1   9 11 7   4 9 1   11 4 2   1 11 3   4 1 5   5 4 4   5 8 1   5 7 7   7 8 1  8 2 2   2 7 3   2 3 5 0";
         Scanner in;
         // If there is a command line argument, use it as file from which
         // input is read, otherwise use input from string.
@@ -169,7 +169,9 @@ public class DFS extends GraphAlgorithm<DFS.DFSVertex> {
 
         // Read graph from input
         Graph g = Graph.readDirectedGraph(in);
+
         g.printGraph(false);
+
 
 
         DFS d = new DFS(g);
@@ -185,15 +187,24 @@ public class DFS extends GraphAlgorithm<DFS.DFSVertex> {
             System.out.println("Not a DAG");
         }
 
-        System.out.println("Comp No."+d.noOfC);
-        g.reverseGraph();
+        d.g.reverseGraph();
         d.dfs(finishList);
-        g.reverseGraph();
+        d.g.reverseGraph();
 
 
+        Map<Integer,List<Integer>> map = new HashMap<>();
         if(d.finishList!=null){
-            for (Vertex v:d.finishList){
-                System.out.println(v);
+            for (Vertex v:g){
+               List<Integer> list = map.get( d.get(v).cno);
+               if(list == null) {
+                   list = new ArrayList<>();
+                   list.add(v.getName());
+                   map.put(d.get(v).cno,list);
+               }
+
+               else
+                   list.add(v.getName());
+
             }
         }
         else {
