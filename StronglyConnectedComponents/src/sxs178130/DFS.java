@@ -149,7 +149,30 @@ public class DFS extends GraphAlgorithm<DFS.DFSVertex> {
 
 
     public static DFS stronglyConnectedComponents(Graph g)
-    { return null; }
+    {
+
+        DFS d = new DFS(g);
+
+        d.dfs(g);
+        List<Vertex> finishList= new LinkedList<>();
+
+        if(d.finishList!=null){
+            for (Vertex v:d.finishList){
+                finishList.add(v);
+            }
+        }
+        else {
+            System.out.println("Not a DAG");
+        }
+
+        d.g.reverseGraph();
+        d.dfs(finishList);
+        d.g.reverseGraph();
+
+
+        return d;
+
+    }
 
     // Find topological oder of a DAG using the second algorithm. Returns null if g is not a DAG.
     public static List<Vertex> topologicalOrder2(Graph g) {
@@ -171,45 +194,30 @@ public class DFS extends GraphAlgorithm<DFS.DFSVertex> {
         Graph g = Graph.readDirectedGraph(in);
 
         g.printGraph(false);
-
-
-
-        DFS d = new DFS(g);
-        d.dfs(g);
-        List<Vertex> finishList= new LinkedList<>();
-
-        if(d.finishList!=null){
-            for (Vertex v:d.finishList){
-                finishList.add(v);
-            }
-        }
-        else {
-            System.out.println("Not a DAG");
-        }
-
-        d.g.reverseGraph();
-        d.dfs(finishList);
-        d.g.reverseGraph();
+        DFS d = DFS.stronglyConnectedComponents(g);
 
 
         Map<Integer,List<Integer>> map = new HashMap<>();
         if(d.finishList!=null){
             for (Vertex v:g){
-               List<Integer> list = map.get( d.get(v).cno);
-               if(list == null) {
-                   list = new ArrayList<>();
-                   list.add(v.getName());
-                   map.put(d.get(v).cno,list);
-               }
+                List<Integer> list = map.get( d.get(v).cno);
+                if(list == null) {
+                    list = new ArrayList<>();
+                    list.add(v.getName());
+                    map.put(d.get(v).cno,list);
+                }
 
-               else
-                   list.add(v.getName());
+                else
+                    list.add(v.getName());
 
             }
         }
         else {
             System.out.println("Not a DAG");
         }
+
+
+
         System.out.println("Comp No."+d.noOfC);
 
 
