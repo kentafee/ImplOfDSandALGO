@@ -40,11 +40,46 @@ public class Enumerate<T> {
     // c more elements are needed from arr[d..n-1].  d = k-c.
     public void permute(int c) {  // To do for LP4
 
-        
+        if(c==0)
+            this.visit(this.arr);
+        else
+        {
+            int d = k-c;
+            permute(c-1);
+            for(int i =d+1 ; i< this.arr.length ; i++)
+            {
+                T temp = arr[d];
+                arr[d] = arr[i];
+                arr[i] = temp;
+                permute(c-1);
+
+                arr[i] = arr[d];
+                arr[d] = temp;
+
+            }
+        }
+
     }
 
     // choose c items from A[0..i-1].  In SP11-opt
     public void combine(int i, int c) {
+
+        if(c == 0)
+            this.visit(this.arr);
+
+        else
+        {
+            T temp = arr[k-c];
+            arr[k-c] = arr[i];
+            arr[i] = temp;
+            combine(i+1,c-1);
+            arr[i] = arr[k-c];
+            arr[k-c] = temp;
+            if(this.arr.length-i > c)
+                combine(i+1,c);
+
+        }
+
     }
 
     // Still g elements to go.  In SP11-opt
@@ -144,14 +179,14 @@ public class Enumerate<T> {
         System.out.println("combinations: " + n + " " + k);
         e = combine(arr, k);
         System.out.println("Count: " + e.count + "\n_________________________");
-
-        System.out.println("Heap Permutations: " + n);
-        e = heap(arr);
-        System.out.println("Count: " + e.count + "\n_________________________");
-
-        Integer[] test = {1,2,2,3,3,4};
-        System.out.println("Algorithm L Permutations: ");
-        e = algorithmL(test, (Integer a, Integer b) -> a.compareTo(b));
-        System.out.println("Count: " + e.count + "\n_________________________");
+//
+//        System.out.println("Heap Permutations: " + n);
+//        e = heap(arr);
+//        System.out.println("Count: " + e.count + "\n_________________________");
+//
+//        Integer[] test = {1,2,2,3,3,4};
+//        System.out.println("Algorithm L Permutations: ");
+//        e = algorithmL(test, (Integer a, Integer b) -> a.compareTo(b));
+//        System.out.println("Count: " + e.count + "\n_________________________");
     }
 }

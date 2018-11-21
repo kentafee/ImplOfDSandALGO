@@ -16,7 +16,7 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
     Selector sel;
     public EnumerateTopological(Graph g) {
         super(g, new EnumVertex());
-        print = false;
+        print = true;
         count = 0;
         sel = new Selector();
     }
