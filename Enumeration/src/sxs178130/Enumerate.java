@@ -45,17 +45,15 @@ public class Enumerate<T> {
         else
         {
             int d = k-c;
-            permute(c-1);
-            for(int i =d+1 ; i< this.arr.length ; i++)
-            {
-                T temp = arr[d];
-                arr[d] = arr[i];
-                arr[i] = temp;
-                permute(c-1);
+            for(int i =d ; i< this.arr.length ; i++) {
+                if (app.select(arr[i])) {
+                    swap(i,d);
+                    permute(c - 1);
+                    swap(i,d);
+                    app.unselect(arr[i]);
 
-                arr[i] = arr[d];
-                arr[d] = temp;
 
+                }
             }
         }
 
@@ -164,7 +162,7 @@ public class Enumerate<T> {
 
     public static void main(String args[]) {
         int n = 4;
-        int k = 3;
+        int k = 2;
         if(args.length > 0) { n = Integer.parseInt(args[0]);  k = n; }
         if(args.length > 1) { k = Integer.parseInt(args[1]); }
         Integer[] arr = new Integer[n];
