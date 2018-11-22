@@ -64,7 +64,7 @@ public class Enumerate<T> {
     public void combine(int i, int c) {
 
         if (c == 0)
-            this.visit(this.arr);
+            this.app.visit(this.arr,this.k);
 
         else {
 

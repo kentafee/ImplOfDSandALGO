@@ -84,6 +84,7 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
 
     // To do: LP4; return the number of topological orders of g
     public long enumerateTopological(boolean flag) {
+        print = flag;
         int k = this.g.getVertexArray().length;
         Enumerate enumerate = new Enumerate(this.g.getVertexArray(),k,sel);
         enumerate.permute(k);
@@ -103,7 +104,7 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
     }
 
     public static void main(String[] args) throws Exception{
-        int VERBOSE = 1;
+        int VERBOSE = 0;
 //        if(args.length > 0) { VERBOSE = Integer.parseInt(args[0]); }
 //        Graph g = Graph.readDirectedGraph(new java.util.Scanner(System.in));
 
@@ -116,7 +117,6 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
 
         // Read graph from input
         Graph g = Graph.readDirectedGraph(in);
-        g.printGraph(false);
         Graph.Timer t = new Graph.Timer();
         long result;
         if(VERBOSE > 0) {
