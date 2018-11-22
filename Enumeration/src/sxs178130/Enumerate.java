@@ -1,6 +1,8 @@
 
-/** Starter code for permutations and combinations of distinct items
- *  @author
+/**
+ * Starter code for permutations and combinations of distinct items
+ *
+ * @author
  **/
 
 package sxs178130;
@@ -40,16 +42,15 @@ public class Enumerate<T> {
     // c more elements are needed from arr[d..n-1].  d = k-c.
     public void permute(int c) {  // To do for LP4
 
-        if(c==0)
+        if (c == 0)
             this.visit(this.arr);
-        else
-        {
-            int d = k-c;
-            for(int i =d ; i< this.arr.length ; i++) {
+        else {
+            int d = k - c;
+            for (int i = d; i < this.arr.length; i++) {
                 if (app.select(arr[i])) {
-                    swap(i,d);
+                    swap(i, d);
                     permute(c - 1);
-                    swap(i,d);
+                    swap(i, d);
                     app.unselect(arr[i]);
 
 
@@ -62,19 +63,16 @@ public class Enumerate<T> {
     // choose c items from A[0..i-1].  In SP11-opt
     public void combine(int i, int c) {
 
-        if(c == 0)
+        if (c == 0)
             this.visit(this.arr);
 
-        else
-        {
-            T temp = arr[k-c];
-            arr[k-c] = arr[i];
-            arr[i] = temp;
-            combine(i+1,c-1);
-            arr[i] = arr[k-c];
-            arr[k-c] = temp;
-            if(this.arr.length-i > c)
-                combine(i+1,c);
+        else {
+
+            swap(i, k - c);
+            combine(i + 1, c - 1);
+            swap(i, k - c);
+            if (this.arr.length - i > c)
+                combine(i + 1, c);
 
         }
 
@@ -100,10 +98,13 @@ public class Enumerate<T> {
     // Extend this class in algorithms that need to enumerate permutations with precedence constraints
     public static class Approver<T> {
         /* Extend permutation by item? */
-        public boolean select(T item) { return true; }
+        public boolean select(T item) {
+            return true;
+        }
 
         /* Backtrack selected item */
-        public void unselect(T item) { }
+        public void unselect(T item) {
+        }
 
         /* Visit a permutation or combination */
         public void visit(T[] array, int k) {
@@ -123,7 +124,7 @@ public class Enumerate<T> {
     }
 
     void reverse(int low, int high) {
-        while(low < high) {
+        while (low < high) {
             swap(low, high);
             low++;
             high--;
@@ -133,28 +134,28 @@ public class Enumerate<T> {
     //--------------------Static methods----------------------------
 
     // Enumerate permutations of k items out of n = arr.length
-    public static<T> Enumerate<T> permute(T[] arr, int k) {
+    public static <T> Enumerate<T> permute(T[] arr, int k) {
         Enumerate<T> e = new Enumerate<>(arr, k);
         e.permute(k);
         return e;
     }
 
     // Enumerate combinations of k items out of n = arr.length
-    public static<T> Enumerate<T> combine(T[] arr, int k) {
+    public static <T> Enumerate<T> combine(T[] arr, int k) {
         Enumerate<T> e = new Enumerate<>(arr, k);
         e.combine(0, k);
         return e;
     }
 
     // Enumerate permutations of n = arr.length item, using Heap's algorithm
-    public static<T> Enumerate<T> heap(T[] arr) {
+    public static <T> Enumerate<T> heap(T[] arr) {
         Enumerate<T> e = new Enumerate<>(arr, arr.length);
         e.heap(arr.length);
         return e;
     }
 
     // Enumerate permutations of items in array, using Knuth's algorithm L
-    public static<T> Enumerate<T> algorithmL(T[] arr, Comparator<T> c) {
+    public static <T> Enumerate<T> algorithmL(T[] arr, Comparator<T> c) {
         Enumerate<T> e = new Enumerate<>(arr, arr.length);
         e.algorithmL(c);
         return e;
@@ -163,11 +164,16 @@ public class Enumerate<T> {
     public static void main(String args[]) {
         int n = 4;
         int k = 2;
-        if(args.length > 0) { n = Integer.parseInt(args[0]);  k = n; }
-        if(args.length > 1) { k = Integer.parseInt(args[1]); }
+        if (args.length > 0) {
+            n = Integer.parseInt(args[0]);
+            k = n;
+        }
+        if (args.length > 1) {
+            k = Integer.parseInt(args[1]);
+        }
         Integer[] arr = new Integer[n];
         for (int i = 0; i < n; i++) {
-            arr[i] = i+1;
+            arr[i] = i + 1;
         }
 
         System.out.println("Permutations: " + n + " " + k);
