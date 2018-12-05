@@ -1,0 +1,8 @@
+         N           8M          16 M           32 M         64 M
+
+
+
+1. Binary Heap       3086ms     7197 ms       17942ms       INF
+
+
+2. Selection         644ms      1408 ms       2656ms        12038ms

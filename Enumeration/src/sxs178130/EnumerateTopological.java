@@ -9,8 +9,6 @@ import rbk.Graph.Vertex;
 import rbk.Graph.Factory;
 
 import java.io.File;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Scanner;
 
 public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.EnumVertex> {
